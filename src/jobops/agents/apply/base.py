@@ -96,21 +96,60 @@ def safe_select(page: Page, selector: str, value: str, timeout: int = 3000) -> b
 
 
 def detect_captcha(page: Page) -> bool:
+    """
+    Detect ACTIVE captcha challenges — not invisible/hidden badges that load silently.
+    reCAPTCHA invisible badge is present on many forms without user-facing challenge.
+    """
     content = page.content().lower()
-    return any(x in content for x in ["captcha", "recaptcha", "cf-challenge", "hcaptcha", "i am not a robot"])
+    # Hard challenges — always flag
+    hard = ["cf-challenge", "hcaptcha", "i am not a robot", "verify you are human",
+            "please complete the security check", "prove you are human"]
+    if any(x in content for x in hard):
+        return True
+    # reCAPTCHA: only flag if the widget iframe is visible (not just the hidden badge CSS)
+    if "recaptcha" in content or "captcha" in content:
+        try:
+            # Invisible badge has visibility:hidden — a real challenge has a visible iframe
+            frame = page.query_selector("iframe[src*='recaptcha'][title*='reCAPTCHA']")
+            if frame and frame.is_visible():
+                return True
+            # hCaptcha iframe
+            frame2 = page.query_selector("iframe[src*='hcaptcha']")
+            if frame2 and frame2.is_visible():
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def detect_unexpected_fields(page: Page) -> list[str]:
-    """Return list of unusual field labels found on the page."""
+    """
+    Return list of unusual REQUIRED fields that need human review.
+    Only flag textarea/text inputs with these labels — not optional file uploads
+    or mentions in the job description text.
+    """
     unexpected = []
-    content = page.content().lower()
-    flags = [
-        "cover letter", "essay", "writing sample", "video",
-        "salary expectation", "desired salary", "expected salary",
-    ]
-    for flag in flags:
-        if flag in content:
-            unexpected.append(flag)
+    essay_labels = ["essay", "writing sample", "video introduction", "video response"]
+    # Salary is always unexpected (we handle it via fixed answers, but flag if required)
+    salary_labels = ["salary expectation", "desired salary", "expected salary", "current salary"]
+
+    try:
+        # Check textareas — these are always essay-style
+        textareas = page.query_selector_all("textarea")
+        for ta in textareas:
+            label = _get_label_for(page, ta).lower()
+            if any(kw in label for kw in essay_labels):
+                unexpected.append(label[:50])
+
+        # Check required text inputs for salary
+        inputs = page.query_selector_all("input[type='text'][required], input[required]")
+        for inp in inputs:
+            label = _get_label_for(page, inp).lower()
+            if any(kw in label for kw in salary_labels):
+                unexpected.append(label[:50])
+    except Exception:
+        pass
+
     return unexpected
 
 

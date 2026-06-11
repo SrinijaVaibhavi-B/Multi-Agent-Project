@@ -11,7 +11,7 @@ from jobops.agents.apply.downloader import download_resume
 from jobops.agents.apply.greenhouse import apply_greenhouse
 from jobops.agents.apply.lever import apply_lever
 from jobops.agents.apply.ashby import apply_ashby
-from jobops.db.session import get_session
+from jobops.db.db import get_session
 from jobops.db.models import JobPipeline
 
 logger = logging.getLogger(__name__)
@@ -59,13 +59,17 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
     logger.info("Processing %d jobs (dry_run=%s)", len(jobs), dry_run)
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = pw.chromium.launch(
+            headless=True,
+            args=["--ignore-certificate-errors", "--disable-web-security"],
+        )
         context = browser.new_context(
             user_agent=(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "
                 "Chrome/120.0.0.0 Safari/537.36"
-            )
+            ),
+            ignore_https_errors=True,
         )
 
         for job in jobs:

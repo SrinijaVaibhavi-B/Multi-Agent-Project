@@ -16,7 +16,12 @@ def apply_ashby(page: Page, job_url: str, resume_path: str, profile: CandidatePr
     Returns (result, reason/screenshot_path).
     """
     try:
-        page.goto(job_url, wait_until="domcontentloaded", timeout=30000)
+        # Ashby job pages are at /job-id — the form is at /job-id/application
+        if "/application" not in job_url:
+            apply_url = job_url.rstrip("/") + "/application"
+        else:
+            apply_url = job_url
+        page.goto(apply_url, wait_until="networkidle", timeout=30000)
         page.wait_for_timeout(2000)
 
         if detect_captcha(page):
