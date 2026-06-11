@@ -20,7 +20,7 @@ FORMATTING RULES
 - Bold key metrics, numbers, company names, and tech stack terms inline within bullets using <strong> tags
 - No newsletter-style bold headings within bullet text
 - No excessive bolding — only bold what truly matters
-- 1 page maximum. Be ruthless.
+- 2 pages maximum. 1-2 pages is ideal.
 - Clean, readable formatting
 
 PROFESSIONAL SUMMARY RULES
