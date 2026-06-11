@@ -2,12 +2,31 @@
 
 import click
 from jobops.agents.tailor.runner import run_tailor
+from jobops.agents.tailor.drive import get_auth_url, exchange_code
 
 
 @click.group()
 def tailor():
     """Resume tailoring commands."""
     pass
+
+
+@tailor.command("auth")
+def tailor_auth():
+    """One-time Google Drive OAuth2 setup — get your refresh token."""
+    import json
+    from dotenv import load_dotenv
+    load_dotenv()
+    auth_url, flow = get_auth_url()
+    click.echo("\n1. Open this URL in your browser:\n")
+    click.echo(f"   {auth_url}\n")
+    click.echo("2. Sign in with your Google account and allow access.")
+    click.echo("3. Copy the authorization code shown and paste it below.\n")
+    code = click.prompt("Authorization code").strip()
+    token_data = exchange_code(flow, code)
+    token_json = json.dumps(token_data)
+    click.echo("\nAuth successful! Add this to your .env file:\n")
+    click.echo(f"GOOGLE_DRIVE_TOKEN_JSON={token_json}\n")
 
 
 @tailor.command("run")

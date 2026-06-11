@@ -39,35 +39,37 @@ def _get_service():
     return build("drive", "v3", cache_discovery=False, http=authorized_http)
 
 
-def run_auth_flow() -> dict:
-    """
-    Run OAuth2 flow to get user credentials. Prints URL, waits for code.
-    Returns token dict to store in GOOGLE_DRIVE_TOKEN_JSON env var.
-    """
-    sa_raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
-    if not sa_raw:
-        raise RuntimeError("GOOGLE_SERVICE_ACCOUNT_JSON not set")
-    sa = json.loads(sa_raw)
-
-    # Build OAuth2 client config from service account project
-    client_config = {
-        "installed": {
-            "client_id": os.environ.get("GOOGLE_OAUTH_CLIENT_ID", ""),
-            "client_secret": os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET", ""),
-            "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"],
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-        }
-    }
+def get_auth_url() -> str:
+    """Return the OAuth2 authorization URL for the user to visit."""
+    client_id = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
+    client_secret = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
+    if not client_id or not client_secret:
+        raise RuntimeError("GOOGLE_OAUTH_CLIENT_ID / GOOGLE_OAUTH_CLIENT_SECRET not set")
+    client_config = {"installed": {
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob"],
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+    }}
     flow = InstalledAppFlow.from_client_config(client_config, scopes=_SCOPES)
-    creds = flow.run_console()
-    return {
+    flow.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent")
+    return auth_url, flow
+
+
+def exchange_code(flow, code: str) -> dict:
+    """Exchange the auth code for tokens. Returns token dict."""
+    flow.fetch_token(code=code)
+    creds = flow.credentials
+    token_data = {
         "token": creds.token,
         "refresh_token": creds.refresh_token,
         "token_uri": creds.token_uri,
         "client_id": creds.client_id,
         "client_secret": creds.client_secret,
     }
+    return token_data
 
 
 def upload_resume(pdf_path: str, filename: str) -> str:
