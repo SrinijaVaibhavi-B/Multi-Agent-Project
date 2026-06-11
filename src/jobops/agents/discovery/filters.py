@@ -167,6 +167,11 @@ _BLOCKLISTED_ORGS = {
     "speechify",         # spam — posts same job for 50+ cities
     "google",            # too large/competitive
     "alphabet",
+    "dataannotation",    # data labeling, not real SWE
+    "pragmatike",        # spam — same job posted dozens of times
+    "hire feed",         # aggregator
+    "fetchjobs.co",      # aggregator
+    "revature",          # training bootcamp + staffing, not real SWE employer
 }
 
 # Pure defense-only companies — no normal SWE roles worth applying to
