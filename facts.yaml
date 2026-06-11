@@ -1,0 +1,29 @@
+candidate:
+  yoe: 3
+  acceptable_yoe_range: [1, 5]
+  # Got interviews at 5+ YOE roles too — include up to 5
+
+  # Domains to hard-exclude regardless of title or stack
+  exclude_domains:
+    - robotics
+    - embedded systems
+    - firmware
+    - GPU programming
+    - TPU
+    - chips
+    - semiconductor
+    - FPGA
+    - ASIC
+    - hardware engineering
+    - kernel development
+    - device drivers
+    - real-time systems
+    - avionics
+    - signal processing (DSP)
+
+  preferences:
+    locations: any       # anywhere in the US
+    work_arrangement: any  # remote / hybrid / onsite all fine
+    company_stage: any   # startups, mid-size, enterprise all fine
+    industries: any      # finance, health, SaaS, AI, consumer — all fine
+    tech_stack: flexible # resume will be tailored per job — no hard stack preference
