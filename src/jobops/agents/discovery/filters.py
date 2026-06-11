@@ -133,13 +133,31 @@ _KNOWN_STAFFING_DOMAINS = {
     "hcl.com",
 }
 
+# Job board aggregator accounts — not real employers
+_KNOWN_JOB_BOARD_ORGS = {
+    "chatgpt jobs",
+    "ai jobs",
+    "jobs via chatgpt",
+    "jobgether",
+    "jobleads",
+    "jobrapido",
+    "jooble",
+    "resume-library",
+    "jobsora",
+    "jobs on the go",
+    "zip recruiter",  # as an org name posting jobs
+}
+
 
 def is_staffing_firm(organization: str, source_domain: str) -> bool:
-    """Return True if the company looks like a staffing/recruiting firm."""
+    """Return True if the company looks like a staffing/recruiting firm or job board aggregator."""
     if source_domain in _KNOWN_STAFFING_DOMAINS:
         return True
 
     org_lower = organization.lower()
+
+    if org_lower in _KNOWN_JOB_BOARD_ORGS:
+        return True
 
     for kw in _STAFFING_KEYWORDS:
         if kw in org_lower:
