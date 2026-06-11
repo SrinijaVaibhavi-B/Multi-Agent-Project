@@ -39,7 +39,7 @@ def _get_service():
     return build("drive", "v3", cache_discovery=False, http=authorized_http)
 
 
-def get_auth_url() -> str:
+def get_auth_url() -> tuple:
     """Return the OAuth2 authorization URL for the user to visit."""
     client_id = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
     client_secret = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
@@ -54,13 +54,17 @@ def get_auth_url() -> str:
     }}
     flow = InstalledAppFlow.from_client_config(client_config, scopes=_SCOPES)
     flow.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
-    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent")
+    # Disable PKCE so code_verifier stays consistent
+    auth_url, _ = flow.authorization_url(
+        access_type="offline", prompt="consent",
+        code_challenge=None, code_challenge_method=None,
+    )
     return auth_url, flow
 
 
 def exchange_code(flow, code: str) -> dict:
     """Exchange the auth code for tokens. Returns token dict."""
-    flow.fetch_token(code=code)
+    flow.fetch_token(code=code, code_verifier=None)
     creds = flow.credentials
     token_data = {
         "token": creds.token,
