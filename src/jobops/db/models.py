@@ -48,6 +48,9 @@ class JobPipeline(Base):
     date_discovered: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow, nullable=False)
     raw_description: Mapped[str | None] = mapped_column(Text, nullable=True)
     fit_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    company_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    job_title: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    job_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 
     job: Mapped["Job | None"] = relationship(back_populates="pipeline")
     review_items: Mapped[list["ReviewQueue"]] = relationship(back_populates="pipeline")
