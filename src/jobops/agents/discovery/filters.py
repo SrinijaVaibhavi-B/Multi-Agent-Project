@@ -181,6 +181,10 @@ _DEFENSE_ORGS = {
     "caci",
     "mdo",
     "abile group",
+    "rtx",
+    "raytheon",
+    "collins aerospace",
+    "pratt & whitney",
 }
 
 # Job title keywords that indicate clearance-required roles
