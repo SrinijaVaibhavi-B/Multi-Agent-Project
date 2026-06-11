@@ -51,6 +51,7 @@ class JobPipeline(Base):
     company_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     job_title: Mapped[str | None] = mapped_column(String(255), nullable=True)
     job_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    resume_drive_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 
     job: Mapped["Job | None"] = relationship(back_populates="pipeline")
     review_items: Mapped[list["ReviewQueue"]] = relationship(back_populates="pipeline")

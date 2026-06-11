@@ -1,7 +1,100 @@
 candidate:
-  yoe: 3
+  name: Srinija Vaibhavi Boggavarapu
+  email: hello@srinijavaibhavi.com
+  phone: "+1 (904) 312-3224"
+  github: https://github.com/SrinijaVaibhavi-B
+  linkedin: https://www.linkedin.com/in/SrinijaVaibhaviB/
+
+  yoe: 4          # 4+ years total (Avexa Sep2020-Dec2022 + Polaris Feb2025-present + internship)
   acceptable_yoe_range: [1, 5]
-  # Got interviews at 5+ YOE roles too — include up to 5
+
+  summary: >
+    Software Engineer specializing in enterprise AI Agents and automation,
+    translating ambiguous business problems into production-grade agentic systems
+    that eliminate manual work, reduce operational costs, and scale across entire
+    organizations. Backed by 4+ years of engineering depth, a Master's in Computer
+    Science with ML specialization, and a track record of 92% cost reduction,
+    7,500+ employee hours saved annually, and 9 shipped AI agents serving 6,000+
+    enterprise users. Rooted in a full-stack distributed systems foundation, having
+    engineered production platforms processing 100K+ daily transactions and serving
+    200K+ consumers at a Fortune 500 banking client.
+
+  education:
+    - degree: Master of Science, Computer Science (Machine Learning Specialization)
+      school: University of Central Florida
+      location: Orlando, FL
+      gpa: "4.0 / 4.0"
+      dates: Jan 2023 – Dec 2024
+      notes:
+        - Teaching Assistant for Artificial Intelligence course (150+ students)
+        - "Relevant Coursework: Design & Analysis of Algorithms, Advanced Computer Architecture, Advanced Software Systems Security"
+
+  experience:
+    - company: Polaris Inc
+      title: Software Engineer
+      location: Medina, MN (Remote)
+      dates: Feb 2025 – Present
+      contract_notes: "Contract via Arcane Systems Inc (Sep 2025–present) | Contract via Devoir Software Solutions LLC (Feb–Sep 2025)"
+      bullets:
+        - "Saved $98,800+ annually and 15,000+ employee hours by designing and deploying 9 production AI agents across Finance, Legal, Sourcing, HR, and Compliance using LangGraph stateful graph orchestration, Azure OpenAI, Azure AI Foundry, and FastAPI async backends"
+        - "Maintained 91.7% average answer accuracy and 4.2/5.0 user satisfaction across all 9 agents over a 100,000+ document corpus, engineering Azure AI Search hybrid retrieval (BM25 + dense vector + semantic re-ranking), hierarchical parent-child chunking with text-embedding-3-large, and Pydantic v2 validated tool schemas with exact source citations"
+        - "Eliminated 500+ hours of manual compliance monitoring annually by architecting the AI Compliance Monitor using Playwright for headless regulatory scraping, SHA-256 change detection against Snowflake, and Microsoft Graph API for targeted alert dispatch across 63 internal POCs"
+        - "Eliminated redundant data ingestion across all 9 agents by architecting a shared Azure AI Search index layer over 6 enterprise source systems, reducing per-agent setup from weeks to days with replica scaling and index partitioning sustaining low-latency retrieval under concurrent load across 6,000+ users"
+        - "Owned full-stack delivery across all 9 agents: React/TypeScript frontends with SSE streaming, FastAPI backends, AKS deployments with Horizontal Pod Autoscaling, real-time SignalR dashboards, RAGAS eval pipelines against 500+ ground-truth Q&A tuples, kill-switch guardrails, HITL escalation flows, and Azure DevOps CI/CD"
+        - "Achieved 100% approval rate across 8 formal AI governance reviews with Polaris's senior AI Board, defending architecture, business value, and risk strategy under executive scrutiny"
+        - "Hardened 9 production agents across 6,000+ enterprise users with Azure AD (Entra ID) RBAC, OData security trimming at the index layer, source-level data permissions per user group, and zero security incidents across all deployments"
+
+    - company: Avexa (Fortune 500 banking client)
+      title: Software Engineer
+      location: Hyderabad, India
+      dates: Sep 2020 – Dec 2022
+      bullets:
+        - "Served 200K+ consumers on a Fortune 500 banking client's payments portal by delivering a responsive Angular/TypeScript SPA with WebSocket real-time updates, RxJS reactive state management, and mobile-first design eliminating full-page reloads"
+        - "Cut transaction failure detection from hours to minutes by building a real-time monitoring dashboard over Java/Spring Boot microservices and Apache Kafka event streams, giving operations teams live visibility into 100K+ daily transactions with volume anomaly alerts"
+        - "Prevented $2M+ in annual fraud losses by integrating ML model outputs into a decisioning UI via REST APIs, surfacing risk-scored transactions with full customer context and one-click approve/flag/escalate workflow"
+        - "Containerized payment microservices on AWS EKS using Docker, Kubernetes, Jenkins, and GitHub Actions CI/CD across PostgreSQL and Redis-backed services, eliminating manual release overhead"
+
+    - company: Avexa
+      title: Software Engineer Intern
+      location: Hyderabad, India
+      dates: Jan 2020 – Aug 2020
+      bullets:
+        - "Saved 15% on project costs by building a real-time budget tracking app across 50+ construction sites using React, Django REST Framework, PostgreSQL, and Chart.js, replacing manual spreadsheet reconciliation"
+        - "Engineered offline-first mobile experience for zero-connectivity field workers using React, Redux Persist, and IndexedDB with automatic background sync and conflict resolution"
+
+  volunteer:
+    - org: Center for Societal Aspirations
+      title: Software Developer Specialist Intern
+      location: Dallas, TX (Remote)
+      dates: Sep 2024 – Dec 2024
+      bullets:
+        - "Mapped 500+ previously untracked community services across 10+ underserved regions by building a GIS-powered search platform with interactive service cards using React, Node.js, PostGIS, Docker, deployed to Google Cloud Run"
+
+  projects:
+    - name: AI Resume Builder
+      stack: React, TypeScript, Node.js, Express, Claude API, Tailwind CSS
+      bullets:
+        - "Built full-stack AI application integrating Claude LLM API for automated resume generation with real-time chat interface, live document editing, and multi-format export (PDF/DOCX)"
+
+    - name: Fake News Detection
+      stack: Python, PyTorch, CNN, RNN, BiGRU
+      bullets:
+        - "Implemented Multi-View Neural Network combining DCT frequency analysis with multi-scale CNN, RNN, and bidirectional GRU for image manipulation detection, achieving 81% accuracy on Weibo dataset"
+
+  certifications:
+    - "AWS Solutions Architect – Professional (2025)"
+    - "AWS Developer – Associate (2024)"
+    - "Microsoft Azure AI Engineer Associate (2025)"
+
+  skills:
+    languages: [Python, TypeScript, JavaScript, Java, SQL, Bash]
+    frontend: [React, Angular, "Next.js", "Lit Elements", SignalR, WebSockets, "HTML/CSS"]
+    backend: [FastAPI, Django, Flask, "Spring Boot", "Node.js", "REST APIs", GraphQL, Kafka, "Microservices Architecture"]
+    databases: [PostgreSQL, "Cosmos DB", "Azure AI Search", pgvector, Pinecone, Weaviate, Redis, Snowflake]
+    ai_ml: [LangGraph, LangChain, "RAG pipelines", "Multi-Agent Orchestration", "Prompt Engineering", "Azure OpenAI", "OpenAI API", "Anthropic Claude API", "Copilot Studio", "Agentic Workflows", "HITL", "Semantic Search", "Embedding Pipelines", MCP, A2A, "Agent Memory Architecture", "Kill Switch & Guardrail Design"]
+    cloud: ["Azure (AKS, Monitor, AD, Blob, Service Bus, Functions, API Management, Key Vault)", "AWS (EC2, S3, EKS, Lambda, Bedrock, SageMaker, IAM, CloudWatch, RDS, API Gateway)", GCP, Docker, Kubernetes, "CI/CD", Terraform, Jenkins]
+    testing: [Pytest, Jest, "Unit Testing", "Integration Testing", "E2E Testing", "Adversarial Testing", "Red Teaming", "Load Testing"]
+    observability: [MLflow, Prometheus, "LLM Evals", RAGAS, Guardrails, "A/B Testing", "Production Monitoring"]
 
   # Domains to hard-exclude regardless of title or stack
   exclude_domains:
@@ -22,8 +115,8 @@ candidate:
     - signal processing (DSP)
 
   preferences:
-    locations: any       # anywhere in the US
-    work_arrangement: any  # remote / hybrid / onsite all fine
-    company_stage: any   # startups, mid-size, enterprise all fine
-    industries: any      # finance, health, SaaS, AI, consumer — all fine
-    tech_stack: flexible # resume will be tailored per job — no hard stack preference
+    locations: any
+    work_arrangement: any
+    company_stage: any
+    industries: any
+    tech_stack: flexible

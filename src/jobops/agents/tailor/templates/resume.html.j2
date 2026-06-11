@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Georgia", serif;
+    font-size: 10.5pt;
+    color: #111;
+    background: white;
+    padding: 0.65in 0.7in;
+    line-height: 1.35;
+  }
+  /* Header */
+  .name {
+    font-size: 20pt;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .contact {
+    text-align: center;
+    font-size: 9pt;
+    color: #333;
+    margin-bottom: 14px;
+  }
+  .contact a { color: #333; text-decoration: none; }
+
+  /* Section headings */
+  .section-title {
+    font-size: 10.5pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid #111;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    padding-bottom: 2px;
+  }
+
+  /* Summary */
+  .summary { font-size: 10pt; margin-bottom: 4px; }
+
+  /* Experience */
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1px;
+  }
+  .job-company { font-weight: bold; font-size: 10.5pt; }
+  .job-location { font-size: 9.5pt; color: #444; }
+  .job-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3px;
+  }
+  .job-title { font-style: italic; font-size: 10pt; }
+  .job-dates { font-size: 9.5pt; color: #444; }
+  .job-contract { font-size: 8.5pt; color: #666; margin-bottom: 3px; font-style: italic; }
+
+  ul { padding-left: 14px; margin-bottom: 4px; }
+  li { margin-bottom: 2px; font-size: 10pt; }
+
+  /* Skills */
+  .skills-table { width: 100%; border-collapse: collapse; }
+  .skills-table td { vertical-align: top; padding: 1.5px 0; font-size: 10pt; }
+  .skill-label { font-weight: bold; white-space: nowrap; padding-right: 8px; width: 130px; }
+
+  /* Education */
+  .edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .edu-school { font-weight: bold; }
+  .edu-location { font-size: 9.5pt; color: #444; }
+  .edu-degree { font-style: italic; font-size: 10pt; }
+  .edu-dates { font-size: 9.5pt; color: #444; }
+
+  /* Projects */
+  .project-name { font-weight: bold; }
+  .project-stack { font-style: italic; font-size: 9.5pt; color: #444; }
+
+  /* Certs */
+  .certs { font-size: 10pt; }
+</style>
+</head>
+<body>
+
+<div class="name">{{ name }}</div>
+<div class="contact">
+  {{ email }} &nbsp;|&nbsp; {{ phone }} &nbsp;|&nbsp;
+  <a href="{{ github }}">{{ github | replace("https://", "") }}</a> &nbsp;|&nbsp;
+  <a href="{{ linkedin }}">{{ linkedin | replace("https://www.linkedin.com/in/", "linkedin.com/in/") }}</a>
+</div>
+
+{% if summary %}
+<div class="section-title">Professional Summary</div>
+<div class="summary">{{ summary }}</div>
+{% endif %}
+
+<div class="section-title">Skills</div>
+<table class="skills-table">
+{% for label, items in skills.items() %}
+<tr>
+  <td class="skill-label">{{ label }}:</td>
+  <td>{{ items | join(", ") }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<div class="section-title">Work Experience</div>
+{% for job in experience %}
+<div class="job-header">
+  <span class="job-company">{{ job.company }}</span>
+  <span class="job-location">{{ job.location }}</span>
+</div>
+<div class="job-title-row">
+  <span class="job-title">{{ job.title }}</span>
+  <span class="job-dates">{{ job.dates }}</span>
+</div>
+{% if job.contract_notes is defined and job.contract_notes %}
+<div class="job-contract">{{ job.contract_notes }}</div>
+{% endif %}
+<ul>
+{% for bullet in job.bullets %}
+  <li>{{ bullet }}</li>
+{% endfor %}
+</ul>
+{% endfor %}
+
+{% if volunteer %}
+<div class="section-title">Volunteer Experience</div>
+{% for v in volunteer %}
+<div class="job-header">
+  <span class="job-company">{{ v.org }}</span>
+  <span class="job-location">{{ v.location }}</span>
+</div>
+<div class="job-title-row">
+  <span class="job-title">{{ v.title }}</span>
+  <span class="job-dates">{{ v.dates }}</span>
+</div>
+<ul>
+{% for bullet in v.bullets %}
+  <li>{{ bullet }}</li>
+{% endfor %}
+</ul>
+{% endfor %}
+{% endif %}
+
+<div class="section-title">Education</div>
+{% for edu in education %}
+<div class="edu-header">
+  <span class="edu-school">{{ edu.school }}</span>
+  <span class="edu-location">{{ edu.location }}</span>
+</div>
+<div class="job-title-row">
+  <span class="edu-degree">{{ edu.degree }}{% if edu.gpa %} &nbsp;|&nbsp; GPA: {{ edu.gpa }}{% endif %}</span>
+  <span class="edu-dates">{{ edu.dates }}</span>
+</div>
+{% if edu.notes %}
+<ul>
+{% for note in edu.notes %}
+  <li>{{ note }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+
+{% if projects %}
+<div class="section-title">Projects</div>
+{% for proj in projects %}
+<div>
+  <span class="project-name">{{ proj.name }}</span>
+  {% if proj.stack %}<span class="project-stack"> | {{ proj.stack }}</span>{% endif %}
+</div>
+<ul>
+{% for bullet in proj.bullets %}
+  <li>{{ bullet }}</li>
+{% endfor %}
+</ul>
+{% endfor %}
+{% endif %}
+
+{% if certifications %}
+<div class="section-title">Certifications</div>
+<div class="certs">{{ certifications | join("&nbsp;&nbsp;|&nbsp;&nbsp;") }}</div>
+{% endif %}
+
+</body>
+</html>
