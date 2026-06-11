@@ -43,12 +43,12 @@ def _make_job(**overrides) -> dict:
         "date_posted": datetime.now(timezone.utc).isoformat(),
         "date_created": datetime.now(timezone.utc).isoformat(),
         "title": "Applied AI Engineer, Audio, XR",
-        "organization": "Google",
-        "organization_url": "https://www.google.com",
-        "url": "https://www.google.com/about/careers/applications/jobs/results/110832846603461318",
+        "organization": "Stripe",
+        "organization_url": "https://stripe.com",
+        "url": "https://boards.greenhouse.io/stripe/jobs/123",
         "source_type": "ats",
         "source": "in-house",
-        "source_domain": "google.com",
+        "source_domain": "stripe.com",
         "locations_derived": ["Mountain View, California, United States"],
         "countries_derived": ["United States"],
         "ai_salary_min_value": 159000,
@@ -117,7 +117,7 @@ def test_staffing_firm_by_name_keyword():
 
 
 def test_not_staffing_firm():
-    assert is_staffing_firm("Google", "google.com") is False
+    assert is_staffing_firm("Stripe", "stripe.com") is False
     assert is_staffing_firm("Stripe", "stripe.com") is False
     assert is_staffing_firm("Notion Labs", "notion.so") is False
 
@@ -178,7 +178,7 @@ def test_dedup_hash_format():
     job = _make_job()
     h = compute_dedup_hash(job)
     assert len(h) == 32
-    assert h == hashlib.sha256(b"ats:google.com:2200367755").hexdigest()[:32]
+    assert h == hashlib.sha256(b"ats:stripe.com:2200367755").hexdigest()[:32]
 
 
 def test_dedup_hash_different_jobs():
@@ -259,7 +259,7 @@ def test_ingest_job_creates_row(session):
     assert pipeline.external_job_id == str(job["id"])
     assert pipeline.dedup_hash == h
     assert pipeline.pipeline_status == "discovered"
-    assert pipeline.company_name == "Google"
+    assert pipeline.company_name == "Stripe"
     assert pipeline.job_title == "Applied AI Engineer, Audio, XR"
     assert pipeline.job_url == job["url"]
     assert pipeline.raw_description == job["description_text"]

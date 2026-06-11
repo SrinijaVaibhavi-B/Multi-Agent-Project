@@ -145,8 +145,54 @@ _KNOWN_JOB_BOARD_ORGS = {
     "resume-library",
     "jobsora",
     "jobs on the go",
-    "zip recruiter",  # as an org name posting jobs
+    "zip recruiter",
 }
+
+# Companies explicitly blocklisted (spam posters, too large/competitive, defense, etc.)
+_BLOCKLISTED_ORGS = {
+    "speechify",         # spam — posts same job for 50+ cities
+    "google",            # too large/competitive
+    "alphabet",
+}
+
+# Known defense / government contractors — require clearance, not relevant
+_DEFENSE_ORGS = {
+    "lockheed martin",
+    "lockheedmartin",
+    "booz allen",
+    "booz allen hamilton",
+    "raytheon",
+    "northrop grumman",
+    "northrop",
+    "general dynamics",
+    "l3harris",
+    "l3 technologies",
+    "saic",
+    "leidos",
+    "amentum",
+    "heico",
+    "wencor",
+    "loft federal",
+    "govEagle",
+    "icon plc",
+    "bae systems",
+    "mitre",
+    "peraton",
+    "caci",
+    "mdo",
+    "abile group",
+}
+
+# Job title keywords that indicate clearance-required roles
+_CLEARANCE_KEYWORDS = [
+    "top secret",
+    "ts/sci",
+    "secret clearance",
+    "security clearance",
+    "clearance required",
+    "dod",
+    "itar",
+]
 
 
 def is_staffing_firm(organization: str, source_domain: str) -> bool:
@@ -157,6 +203,9 @@ def is_staffing_firm(organization: str, source_domain: str) -> bool:
     org_lower = organization.lower()
 
     if org_lower in _KNOWN_JOB_BOARD_ORGS:
+        return True
+
+    if org_lower in _BLOCKLISTED_ORGS:
         return True
 
     for kw in _STAFFING_KEYWORDS:
@@ -227,16 +276,28 @@ def compute_ghost_score(job: dict) -> int:
 # Master filter
 # ---------------------------------------------------------------------------
 
+def is_defense_role(organization: str, title: str) -> bool:
+    """Return True if job is defense/government contractor or requires clearance."""
+    if organization.lower() in _DEFENSE_ORGS:
+        return True
+    title_lower = title.lower()
+    return any(kw in title_lower for kw in _CLEARANCE_KEYWORDS)
+
+
 def should_include(job: dict) -> tuple[bool, str]:
     """Master filter. Returns (include, reason)."""
-    title = job.get("title", "")
+    title = job.get("title", "") or ""
+    org = job.get("organization", "") or ""
+    domain = job.get("source_domain", "") or ""
+
     if not is_target_role(title):
         return False, "role_mismatch"
 
-    org = job.get("organization", "") or ""
-    domain = job.get("source_domain", "") or ""
     if is_staffing_firm(org, domain):
         return False, "staffing_firm"
+
+    if is_defense_role(org, title):
+        return False, "defense_blocked"
 
     ghost = compute_ghost_score(job)
     if ghost > 70:
