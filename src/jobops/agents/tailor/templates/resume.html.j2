@@ -180,16 +180,8 @@
   .project-stack { font-size: 8pt; color: #0369a1; font-style: italic; }
 
   /* ── Certifications ── */
-  .cert-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
-  .cert-badge {
-    font-size: 7.5pt;
-    border: 1px solid #0369a1;
-    color: #0369a1;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-weight: 600;
-    background: #f0f9ff;
-  }
+  .cert-line { font-size: 8pt; color: #374151; margin-top: 2px; }
+  .cert-line a { color: #0369a1; text-decoration: none; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -309,10 +301,8 @@
 <!-- CERTIFICATIONS -->
 {% if certifications %}
 <div class="section-title">Certifications</div>
-<div class="cert-list">
-{% for cert in certifications %}
-  <span class="cert-badge">{{ cert.name if cert is mapping else cert }}</span>
-{% endfor %}
+<div class="cert-line">
+{% for cert in certifications %}{% set name = cert.name if cert is mapping else cert %}{% set url = cert.url if cert is mapping else None %}{% if url %}<a href="{{ url }}">{{ name }}</a>{% else %}{{ name }}{% endif %}{% if not loop.last %} &nbsp;|&nbsp; {% endif %}{% endfor %}
 </div>
 {% endif %}
 
