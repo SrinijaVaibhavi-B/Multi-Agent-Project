@@ -172,6 +172,10 @@ _BLOCKLISTED_ORGS = {
     "hire feed",         # aggregator
     "fetchjobs.co",      # aggregator
     "revature",          # training bootcamp + staffing, not real SWE employer
+    "frontier technology",   # defense contractor (DoD/IC)
+    "fti defense",           # defense contractor
+    "applied research solutions",  # defense contractor
+    "innovative defense technologies",  # defense contractor
 }
 
 # Pure defense-only companies — no normal SWE roles worth applying to
@@ -215,6 +219,19 @@ _CLEARANCE_KEYWORDS = [
     "must be a u.s. citizen",
     "active clearance",
     "public trust clearance",
+]
+
+# Phrases in JD that mean the company won't sponsor visas
+_NO_VISA_PHRASES = [
+    "will not provide immigration sponsorship",
+    "no visa sponsorship",
+    "not sponsor visa",
+    "not able to sponsor",
+    "unable to sponsor",
+    "does not sponsor",
+    "cannot sponsor",
+    "will not sponsor",
+    "sponsorship is not available",
 ]
 
 
@@ -309,11 +326,18 @@ def is_defense_role(organization: str, title: str) -> bool:
     return any(kw in title_lower for kw in _CLEARANCE_KEYWORDS)
 
 
+def no_visa_sponsorship(description: str) -> bool:
+    """Return True if the job description explicitly states no visa sponsorship."""
+    desc_lower = (description or "").lower()
+    return any(phrase in desc_lower for phrase in _NO_VISA_PHRASES)
+
+
 def should_include(job: dict) -> tuple[bool, str]:
     """Master filter. Returns (include, reason)."""
     title = job.get("title", "") or ""
     org = job.get("organization", "") or ""
     domain = job.get("source_domain", "") or ""
+    description = job.get("description_text", "") or ""
 
     if not is_target_role(title):
         return False, "role_mismatch"
@@ -323,6 +347,9 @@ def should_include(job: dict) -> tuple[bool, str]:
 
     if is_defense_role(org, title):
         return False, "defense_blocked"
+
+    if no_visa_sponsorship(description):
+        return False, "no_visa_sponsorship"
 
     ghost = compute_ghost_score(job)
     if ghost > 70:
