@@ -6,10 +6,11 @@ from jobops.agents.apply.base import (
     ApplyResult, CandidateProfile,
     safe_fill, safe_select, take_screenshot,
     detect_captcha, detect_unexpected_fields,
+    fill_open_questions,
 )
 
 
-def apply_ashby(page: Page, job_url: str, resume_path: str, profile: CandidateProfile) -> tuple[ApplyResult, str]:
+def apply_ashby(page: Page, job_url: str, resume_path: str, profile: CandidateProfile, jd_snippet: str = "") -> tuple[ApplyResult, str]:
     """
     Fill and submit an Ashby application.
     Returns (result, reason/screenshot_path).
@@ -61,6 +62,10 @@ def apply_ashby(page: Page, job_url: str, resume_path: str, profile: CandidatePr
 
         # --- Custom questions ---
         _handle_ashby_questions(page, profile)
+
+        # --- Open-ended / trap questions ---
+        company_name = job_url.split("/")[2] if job_url else "the company"
+        fill_open_questions(page, profile, company_name, "", jd_snippet)
 
         # --- Submit ---
         submit = page.query_selector("button[type='submit'], input[type='submit']")

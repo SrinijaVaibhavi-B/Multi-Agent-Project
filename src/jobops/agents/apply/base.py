@@ -112,3 +112,100 @@ def detect_unexpected_fields(page: Page) -> list[str]:
         if flag in content:
             unexpected.append(flag)
     return unexpected
+
+
+# Selectors we already handle explicitly — skip these in open question scan
+_KNOWN_FIELD_SELECTORS = {
+    "input[name='name']", "input[name='_systemfield_name']",
+    "input#first_name", "input#last_name",
+    "input[name='email']", "input#email", "input[name='_systemfield_email']",
+    "input[name='phone']", "input#phone", "input[name='_systemfield_phone']",
+    "input[name*='linkedin']", "input[id*='linkedin']",
+    "input[name*='github']", "input[id*='github']",
+    "input[name*='website']", "input[name='location']",
+    "input#job_application_location", "input[name='org']",
+    "input[name='urls[LinkedIn]']", "input[name='urls[GitHub]']",
+    "input[name='urls[Portfolio]']",
+}
+
+
+def fill_open_questions(
+    page: Page,
+    profile: "CandidateProfile",
+    company_name: str,
+    job_title: str,
+    jd_snippet: str = "",
+) -> None:
+    """
+    Find all textarea and text inputs not already filled, get their label text,
+    and use question_ai to fill trap questions and open-ended essay questions.
+    """
+    from jobops.agents.apply.question_ai import answer_question
+
+    # Gather all textareas + visible text inputs
+    elements = []
+    try:
+        elements += page.query_selector_all("textarea")
+        elements += page.query_selector_all("input[type='text']:not([type='hidden'])")
+    except Exception:
+        return
+
+    for el in elements:
+        try:
+            # Skip if already filled
+            current_val = el.input_value() if el.get_attribute("type") != "textarea" else el.text_content()
+            if current_val and current_val.strip():
+                continue
+
+            # Get label text for this element
+            label_text = _get_label_for(page, el)
+            if not label_text or len(label_text.strip()) < 4:
+                continue
+
+            # Skip known standard fields
+            tag = el.evaluate("el => el.tagName").lower()
+            name = el.get_attribute("name") or ""
+            el_id = el.get_attribute("id") or ""
+            if any(kw in name.lower() or kw in el_id.lower() for kw in [
+                "name", "email", "phone", "linkedin", "github", "website", "location", "org", "url"
+            ]):
+                continue
+
+            answer = answer_question(
+                question_text=label_text,
+                first_name=profile.first_name,
+                company_name=company_name,
+                job_title=job_title,
+                jd_snippet=jd_snippet,
+            )
+            if answer:
+                el.fill(answer)
+                page.wait_for_timeout(300)
+
+        except Exception:
+            continue
+
+
+def _get_label_for(page: Page, el) -> str:
+    """Extract label text for a form element."""
+    try:
+        return page.evaluate("""el => {
+            // Explicit label[for=id]
+            if (el.id) {
+                const lbl = document.querySelector(`label[for='${el.id}']`);
+                if (lbl) return lbl.innerText || lbl.textContent || '';
+            }
+            // Wrapping label
+            const wrap = el.closest('label');
+            if (wrap) return wrap.innerText || wrap.textContent || '';
+            // Sibling label or parent question container
+            const parent = el.parentElement;
+            if (parent) {
+                const lbl = parent.querySelector('label') || parent.previousElementSibling;
+                if (lbl) return lbl.innerText || lbl.textContent || '';
+            }
+            // aria-label / placeholder as last resort
+            return el.getAttribute('aria-label') || el.getAttribute('placeholder') || '';
+        }""", el).strip()
+    except Exception:
+        return ""

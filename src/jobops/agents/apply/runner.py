@@ -73,8 +73,8 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
             ats = _detect_ats(job_url)
 
             if ats not in _ATS_HANDLERS:
-                logger.info("Skipping %s — unsupported ATS (url=%s)", job.job_id, job_url)
-                _update_status(job.job_id, "review_needed", f"Unsupported ATS: {job_url}")
+                logger.info("Skipping %s — unsupported ATS (url=%s)", job.id, job_url)
+                _update_status(job.id, "review_needed", f"Unsupported ATS: {job_url}")
                 continue
 
             # Download resume to temp file
@@ -85,8 +85,8 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
                     tmp_file = download_resume(job.resume_drive_url)
                     resume_path = tmp_file
                 else:
-                    logger.warning("No resume_drive_url for job %s — skipping", job.job_id)
-                    _update_status(job.job_id, "review_needed", "No resume uploaded")
+                    logger.warning("No resume_drive_url for job %s — skipping", job.id)
+                    _update_status(job.id, "review_needed", "No resume uploaded")
                     continue
 
                 if dry_run:
@@ -96,15 +96,16 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
                 page = context.new_page()
                 try:
                     handler = _ATS_HANDLERS[ats]
-                    result, reason = handler(page, job_url, resume_path, profile)
-                    logger.info("Job %s → %s (%s)", job.job_id, result, reason[:120])
-                    _update_status(job.job_id, result, reason)
+                    jd_snippet = (job.raw_description or "")[:800]
+                    result, reason = handler(page, job_url, resume_path, profile, jd_snippet=jd_snippet)
+                    logger.info("Job %s → %s (%s)", job.id, result, reason[:120])
+                    _update_status(job.id, result, reason)
                 finally:
                     page.close()
 
             except Exception as e:
-                logger.error("Job %s failed: %s", job.job_id, e)
-                _update_status(job.job_id, "failed", str(e))
+                logger.error("Job %s failed: %s", job.id, e)
+                _update_status(job.id, "failed", str(e))
             finally:
                 if tmp_file and os.path.exists(tmp_file):
                     os.unlink(tmp_file)
@@ -115,7 +116,7 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
 
 def _update_status(job_id: str, status: str, reason: str) -> None:
     with get_session() as session:
-        job = session.query(JobPipeline).filter(JobPipeline.job_id == job_id).first()
+        job = session.query(JobPipeline).filter(JobPipeline.id == job_id).first()
         if job:
             job.pipeline_status = status
             job.apply_result = reason[:500] if reason else None
