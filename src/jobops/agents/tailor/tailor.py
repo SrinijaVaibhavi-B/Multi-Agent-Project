@@ -37,6 +37,11 @@ STRICT RULES:
 4. Keep the resume to 1-2 pages — be ruthless about cutting weak bullets
 5. Include volunteer section only if it adds relevant signal for this role
 6. Output ONLY valid JSON — no markdown, no explanation
+7. NEVER use em dashes (—) anywhere. Use commas, periods, or rephrase instead
+8. LANGUAGE TONE — write 10-15% human: slightly natural, not robotic corporate-speak.
+   Good: "helped cut fraud losses by $2M+" or "built the monitoring system that caught failures in minutes"
+   Bad: "Spearheaded the implementation of a robust real-time monitoring solution"
+   Keep it confident and direct, like a sharp engineer wrote it, not a resume template
 
 Output schema:
 {
@@ -121,10 +126,22 @@ def tailor_resume(job: dict) -> dict | None:
         if text.startswith("```"):
             text = re.sub(r"^```[a-z]*\n?", "", text)
             text = re.sub(r"\n?```$", "", text)
-        return json.loads(text)
+        result = json.loads(text)
+        return _clean_em_dashes(result)
     except Exception as e:
         print(f"[tailor] LLM error: {e}")
         return None
+
+
+def _clean_em_dashes(obj):
+    """Recursively replace em dashes with commas throughout the resume dict."""
+    if isinstance(obj, str):
+        return obj.replace("—", ",").replace("–", "-")
+    if isinstance(obj, list):
+        return [_clean_em_dashes(i) for i in obj]
+    if isinstance(obj, dict):
+        return {k: _clean_em_dashes(v) for k, v in obj.items()}
+    return obj
 
 
 def verify_resume(tailored: dict, facts: dict) -> tuple[bool, list[str]]:
