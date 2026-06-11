@@ -5,161 +5,208 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: "Georgia", serif;
-    font-size: 10.5pt;
-    color: #111;
+    font-family: "Arial", "Helvetica Neue", sans-serif;
+    font-size: 9.5pt;
+    color: #1a1a1a;
     background: white;
-    padding: 0.65in 0.7in;
-    line-height: 1.35;
+    padding: 0.45in 0.5in;
+    line-height: 1.3;
   }
-  /* Header */
+
+  /* ── Header ── */
+  .header { text-align: center; margin-bottom: 8px; }
   .name {
-    font-size: 20pt;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    text-align: center;
-    margin-bottom: 4px;
+    font-size: 17pt;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #1a1a1a;
   }
   .contact {
-    text-align: center;
-    font-size: 9pt;
-    color: #333;
-    margin-bottom: 14px;
+    font-size: 8.5pt;
+    color: #444;
+    margin-top: 3px;
   }
-  .contact a { color: #333; text-decoration: none; }
+  .contact a { color: #444; text-decoration: none; }
+  .contact span { margin: 0 5px; color: #999; }
 
-  /* Section headings */
+  /* ── Section titles ── */
   .section-title {
-    font-size: 10.5pt;
-    font-weight: bold;
+    font-size: 9pt;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    border-bottom: 1px solid #111;
-    margin-top: 12px;
-    margin-bottom: 6px;
+    letter-spacing: 1.2px;
+    color: #1a1a1a;
+    border-bottom: 1.5px solid #1a1a1a;
+    margin-top: 9px;
+    margin-bottom: 4px;
+    padding-bottom: 1px;
+  }
+
+  /* ── Summary ── */
+  .summary { font-size: 9pt; line-height: 1.4; color: #222; }
+
+  /* ── Experience ── */
+  .job { margin-bottom: 6px; }
+  .job-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .job-company { font-weight: 700; font-size: 9.5pt; }
+  .job-location { font-size: 8.5pt; color: #555; }
+  .job-mid {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+  .job-title { font-style: italic; font-size: 9pt; color: #333; }
+  .job-dates { font-size: 8.5pt; color: #555; }
+  .job-contract { font-size: 8pt; color: #777; font-style: italic; margin-bottom: 2px; }
+
+  ul { padding-left: 12px; margin-bottom: 0; }
+  li {
+    margin-bottom: 2px;
+    font-size: 9pt;
+    line-height: 1.35;
+  }
+  li strong { font-weight: 700; color: #1a1a1a; }
+
+  /* ── Skills ── */
+  .skills-grid { display: table; width: 100%; }
+  .skills-row { display: table-row; }
+  .skill-label {
+    display: table-cell;
+    font-weight: 700;
+    font-size: 8.5pt;
+    white-space: nowrap;
+    padding-right: 6px;
+    padding-bottom: 2px;
+    width: 110px;
+    vertical-align: top;
+    color: #1a1a1a;
+  }
+  .skill-value {
+    display: table-cell;
+    font-size: 8.5pt;
+    color: #222;
     padding-bottom: 2px;
   }
 
-  /* Summary */
-  .summary { font-size: 10pt; margin-bottom: 4px; }
-
-  /* Experience */
-  .job-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 1px;
-  }
-  .job-company { font-weight: bold; font-size: 10.5pt; }
-  .job-location { font-size: 9.5pt; color: #444; }
-  .job-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 3px;
-  }
-  .job-title { font-style: italic; font-size: 10pt; }
-  .job-dates { font-size: 9.5pt; color: #444; }
-  .job-contract { font-size: 8.5pt; color: #666; margin-bottom: 3px; font-style: italic; }
-
-  ul { padding-left: 14px; margin-bottom: 4px; }
-  li { margin-bottom: 2px; font-size: 10pt; }
-
-  /* Skills */
-  .skills-table { width: 100%; border-collapse: collapse; }
-  .skills-table td { vertical-align: top; padding: 1.5px 0; font-size: 10pt; }
-  .skill-label { font-weight: bold; white-space: nowrap; padding-right: 8px; width: 130px; }
-
-  /* Education */
-  .edu-header {
+  /* ── Education ── */
+  .edu-top {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
   }
-  .edu-school { font-weight: bold; }
-  .edu-location { font-size: 9.5pt; color: #444; }
-  .edu-degree { font-style: italic; font-size: 10pt; }
-  .edu-dates { font-size: 9.5pt; color: #444; }
+  .edu-school { font-weight: 700; font-size: 9.5pt; }
+  .edu-location { font-size: 8.5pt; color: #555; }
+  .edu-mid {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+  .edu-degree { font-style: italic; font-size: 9pt; color: #333; }
+  .edu-dates { font-size: 8.5pt; color: #555; }
 
-  /* Projects */
-  .project-name { font-weight: bold; }
-  .project-stack { font-style: italic; font-size: 9.5pt; color: #444; }
+  /* ── Projects ── */
+  .project-header { margin-bottom: 1px; }
+  .project-name { font-weight: 700; font-size: 9pt; }
+  .project-stack { font-size: 8.5pt; color: #555; font-style: italic; }
 
-  /* Certs */
-  .certs { font-size: 10pt; }
+  /* ── Certifications ── */
+  .certs { font-size: 8.5pt; color: #222; line-height: 1.5; }
+
+  /* ── Divider ── */
+  .pipe { margin: 0 4px; color: #bbb; }
 </style>
 </head>
 <body>
 
-<div class="name">{{ name }}</div>
-<div class="contact">
-  {{ email }} &nbsp;|&nbsp; {{ phone }} &nbsp;|&nbsp;
-  <a href="{{ github }}">{{ github | replace("https://", "") }}</a> &nbsp;|&nbsp;
-  <a href="{{ linkedin }}">{{ linkedin | replace("https://www.linkedin.com/in/", "linkedin.com/in/") }}</a>
+<!-- HEADER -->
+<div class="header">
+  <div class="name">{{ name }}</div>
+  <div class="contact">
+    <a href="mailto:{{ email }}">{{ email }}</a>
+    <span>|</span>{{ phone }}
+    <span>|</span><a href="{{ github }}">{{ github | replace("https://github.com/", "github.com/") }}</a>
+    <span>|</span><a href="{{ linkedin }}">{{ linkedin | replace("https://www.linkedin.com/in/", "linkedin.com/in/") }}</a>
+  </div>
 </div>
 
+<!-- SUMMARY -->
 {% if summary %}
-<div class="section-title">Professional Summary</div>
+<div class="section-title">Summary</div>
 <div class="summary">{{ summary }}</div>
 {% endif %}
 
+<!-- SKILLS -->
 <div class="section-title">Skills</div>
-<table class="skills-table">
+<div class="skills-grid">
 {% for label, items in skills.items() %}
-<tr>
-  <td class="skill-label">{{ label }}:</td>
-  <td>{{ items | join(", ") }}</td>
-</tr>
+<div class="skills-row">
+  <div class="skill-label">{{ label }}:</div>
+  <div class="skill-value">{{ items | join(", ") }}</div>
+</div>
 {% endfor %}
-</table>
+</div>
 
-<div class="section-title">Work Experience</div>
+<!-- EXPERIENCE -->
+<div class="section-title">Experience</div>
 {% for job in experience %}
-<div class="job-header">
-  <span class="job-company">{{ job.company }}</span>
-  <span class="job-location">{{ job.location }}</span>
+<div class="job">
+  <div class="job-top">
+    <span class="job-company">{{ job.company }}</span>
+    <span class="job-location">{{ job.location }}</span>
+  </div>
+  <div class="job-mid">
+    <span class="job-title">{{ job.title }}</span>
+    <span class="job-dates">{{ job.dates }}</span>
+  </div>
+  {% if job.contract_notes is defined and job.contract_notes %}
+  <div class="job-contract">{{ job.contract_notes }}</div>
+  {% endif %}
+  <ul>
+  {% for bullet in job.bullets %}
+    <li>{{ bullet }}</li>
+  {% endfor %}
+  </ul>
 </div>
-<div class="job-title-row">
-  <span class="job-title">{{ job.title }}</span>
-  <span class="job-dates">{{ job.dates }}</span>
-</div>
-{% if job.contract_notes is defined and job.contract_notes %}
-<div class="job-contract">{{ job.contract_notes }}</div>
-{% endif %}
-<ul>
-{% for bullet in job.bullets %}
-  <li>{{ bullet }}</li>
-{% endfor %}
-</ul>
 {% endfor %}
 
+<!-- VOLUNTEER -->
 {% if volunteer %}
 <div class="section-title">Volunteer Experience</div>
 {% for v in volunteer %}
-<div class="job-header">
-  <span class="job-company">{{ v.org }}</span>
-  <span class="job-location">{{ v.location }}</span>
+<div class="job">
+  <div class="job-top">
+    <span class="job-company">{{ v.org }}</span>
+    <span class="job-location">{{ v.location }}</span>
+  </div>
+  <div class="job-mid">
+    <span class="job-title">{{ v.title }}</span>
+    <span class="job-dates">{{ v.dates }}</span>
+  </div>
+  <ul>
+  {% for bullet in v.bullets %}
+    <li>{{ bullet }}</li>
+  {% endfor %}
+  </ul>
 </div>
-<div class="job-title-row">
-  <span class="job-title">{{ v.title }}</span>
-  <span class="job-dates">{{ v.dates }}</span>
-</div>
-<ul>
-{% for bullet in v.bullets %}
-  <li>{{ bullet }}</li>
-{% endfor %}
-</ul>
 {% endfor %}
 {% endif %}
 
+<!-- EDUCATION -->
 <div class="section-title">Education</div>
 {% for edu in education %}
-<div class="edu-header">
+<div class="edu-top">
   <span class="edu-school">{{ edu.school }}</span>
   <span class="edu-location">{{ edu.location }}</span>
 </div>
-<div class="job-title-row">
-  <span class="edu-degree">{{ edu.degree }}{% if edu.gpa %} &nbsp;|&nbsp; GPA: {{ edu.gpa }}{% endif %}</span>
+<div class="edu-mid">
+  <span class="edu-degree">{{ edu.degree }}{% if edu.gpa %} &nbsp;·&nbsp; GPA: {{ edu.gpa }}{% endif %}</span>
   <span class="edu-dates">{{ edu.dates }}</span>
 </div>
 {% if edu.notes %}
@@ -171,12 +218,13 @@
 {% endif %}
 {% endfor %}
 
+<!-- PROJECTS -->
 {% if projects %}
 <div class="section-title">Projects</div>
 {% for proj in projects %}
-<div>
+<div class="project-header">
   <span class="project-name">{{ proj.name }}</span>
-  {% if proj.stack %}<span class="project-stack"> | {{ proj.stack }}</span>{% endif %}
+  {% if proj.stack %}<span class="project-stack"> &nbsp;|&nbsp; {{ proj.stack }}</span>{% endif %}
 </div>
 <ul>
 {% for bullet in proj.bullets %}
@@ -186,9 +234,10 @@
 {% endfor %}
 {% endif %}
 
+<!-- CERTIFICATIONS -->
 {% if certifications %}
 <div class="section-title">Certifications</div>
-<div class="certs">{{ certifications | join("&nbsp;&nbsp;|&nbsp;&nbsp;") }}</div>
+<div class="certs">{{ certifications | join(" &nbsp;|&nbsp; ") }}</div>
 {% endif %}
 
 </body>

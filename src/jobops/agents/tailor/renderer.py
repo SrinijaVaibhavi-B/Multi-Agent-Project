@@ -5,6 +5,7 @@ import tempfile
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
+from markupsafe import Markup
 from weasyprint import HTML
 
 _TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
@@ -23,7 +24,7 @@ def render_pdf(tailored: dict, output_path: str) -> str:
     """
     facts = _load_static_facts()
 
-    env = Environment(loader=FileSystemLoader(_TEMPLATE_DIR))
+    env = Environment(loader=FileSystemLoader(_TEMPLATE_DIR), autoescape=False)
     template = env.get_template("resume.html.j2")
 
     # Map skill keys to display labels
