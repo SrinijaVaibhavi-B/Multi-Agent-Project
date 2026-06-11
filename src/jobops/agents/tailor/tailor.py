@@ -44,7 +44,8 @@ Para 3 — Engineering mindset + collaboration:
 Para 4 — AI tooling + SDLC:
 "Accelerates the full SDLC without compromising production integrity, leveraging <strong>Claude Code</strong>, <strong>GitHub Copilot</strong>, and <strong>Cursor</strong> as force multipliers across every stage of development."
 
-When tailoring: keep the 4-paragraph structure and voice. Swap the role identity in Para 1 to match the JD (e.g. "Full-Stack Engineer", "AI Engineer", "Founding Engineer"). Reorder which metrics appear based on what the JD values most.
+This is a STYLE AND VOICE REFERENCE only — do not copy it. Write a completely fresh summary for each JD.
+Use it to calibrate: the confidence level, the specificity, the sentence rhythm, the way metrics are woven in naturally, and the 4-paragraph flow. Every summary should feel like it was written specifically for that role and company, not adapted from a template.
 
 BULLET WRITING RULES — MOST IMPORTANT
 - Result first → business problem → how you solved it → tech stack bolded with <strong> tags
