@@ -75,12 +75,19 @@ TAILORING RULES
 - For startup/founding engineer roles: emphasize sole ownership, self-initiated projects, end-to-end delivery
 - Mirror the JD's exact language for responsibilities where possible (ATS matching)
 
+EXPERIENCE SECTION RULES
+- ALWAYS include ALL 3 roles: Polaris, Avexa Software Engineer, Avexa Intern. Never drop any role.
+- Polaris: 4-5 bullets (most relevant to JD)
+- Avexa SWE: 3-4 bullets
+- Avexa Intern: 2 bullets max — keep it short but always include it
+- To fit 1 page, trim bullet length, not bullet count or roles
+
 WHAT TO NEVER DO
 - Never use em dashes
 - Never put tech stack in summary
 - Never use: passionate, dedicated, hard-working, team player, detail-oriented, results-driven
 - Never start every bullet with the same verb
-- Never exceed 1 page worth of content
+- Never drop any of the 3 experience roles
 - Never sound like AI wrote it
 
 STRICT INTEGRITY RULES
