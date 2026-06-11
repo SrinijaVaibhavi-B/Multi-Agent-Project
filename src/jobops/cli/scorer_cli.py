@@ -1,7 +1,12 @@
 """CLI for the fit scorer agent."""
 
 import click
-from jobops.agents.scorer.runner import run_scorer
+from jobops.agents.scorer.runner import (
+    run_scorer,
+    run_scorer_parallel,
+    run_scorer_batch_submit,
+    run_scorer_batch_collect,
+)
 
 
 @click.group()
@@ -11,21 +16,46 @@ def score():
 
 
 @score.command("run")
-@click.option("--batch-size", default=100, show_default=True, help="Max jobs to score per run.")
-@click.option("--dry-run", is_flag=True, default=False, help="Score but do not write results to DB.")
-def score_run(batch_size: int, dry_run: bool):
-    """Score unscored jobs in the pipeline using rules + LLM."""
-    results = run_scorer(batch_size=batch_size, dry_run=dry_run)
+@click.option("--batch-size", default=100, show_default=True)
+@click.option("--dry-run", is_flag=True, default=False)
+def score_run(batch_size, dry_run):
+    """Score jobs sequentially (slow, use for testing)."""
+    r = run_scorer(batch_size=batch_size, dry_run=dry_run)
+    _print_summary(r)
 
-    click.echo("")
-    click.echo("=" * 50)
+
+@score.command("parallel")
+@click.option("--batch-size", default=5000, show_default=True)
+@click.option("--concurrency", default=20, show_default=True, help="Simultaneous LLM calls.")
+@click.option("--dry-run", is_flag=True, default=False)
+def score_parallel(batch_size, concurrency, dry_run):
+    """Score jobs in parallel (~10-20x faster than sequential)."""
+    r = run_scorer_parallel(batch_size=batch_size, concurrency=concurrency, dry_run=dry_run)
+    _print_summary(r)
+
+
+@score.command("batch-submit")
+@click.option("--batch-size", default=5000, show_default=True)
+def score_batch_submit(batch_size):
+    """Submit all jobs to Anthropic Batch API (50% cheaper, async)."""
+    run_scorer_batch_submit(batch_size=batch_size)
+
+
+@score.command("batch-results")
+@click.option("--batch-id", required=True, help="Batch ID from batch-submit.")
+@click.option("--dry-run", is_flag=True, default=False)
+def score_batch_results(batch_id, dry_run):
+    """Collect results from a previously submitted batch."""
+    r = run_scorer_batch_collect(batch_id=batch_id, dry_run=dry_run)
+    if r.get("status") == "done":
+        _print_summary(r)
+
+
+def _print_summary(r: dict):
+    click.echo("\n" + "=" * 50)
     click.echo("  Scorer Summary")
     click.echo("=" * 50)
-    click.echo(f"  Total processed   : {results['total']}")
-    click.echo(f"  Rule rejected     : {results['rule_rejected']}")
-    click.echo(f"  LLM scored        : {results['llm_scored']}")
-    click.echo(f"  Queued (>= 40)    : {results['queued']}")
-    click.echo(f"  Skipped (< 40)    : {results['skipped']}")
-    if results["dry_run"]:
-        click.echo("  (DRY RUN — no DB writes)")
+    for k, v in r.items():
+        if k != "dry_run":
+            click.echo(f"  {k:<20}: {v}")
     click.echo("=" * 50)
