@@ -311,8 +311,15 @@
 <div class="section-title">Certifications</div>
 <div class="cert-list">
 {% for cert in certifications %}
-  <span class="cert-badge">{{ cert }}</span>
+  <span class="cert-badge">{{ cert.name if cert is mapping else cert }}</span>
 {% endfor %}
+</div>
+{% endif %}
+
+<!-- WORK AUTHORIZATION -->
+{% if work_authorization %}
+<div style="margin-top:6px; font-size:7.5pt; color:#6b7280; border-top:1px solid #e5e7eb; padding-top:4px;">
+  <strong style="color:#374151;">Work Authorization:</strong> {{ work_authorization }}
 </div>
 {% endif %}
 

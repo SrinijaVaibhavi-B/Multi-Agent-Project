@@ -4,20 +4,105 @@ candidate:
   phone: "+1 (904) 312-3224"
   github: https://github.com/SrinijaVaibhavi-B
   linkedin: https://www.linkedin.com/in/SrinijaVaibhaviB/
+  work_authorization: "STEM OPT EAD, valid through Feb 2028. No sponsorship required to start. Will require H-1B in future. Open to relocation nationwide."
 
-  yoe: 4          # 4+ years total (Avexa Sep2020-Dec2022 + Polaris Feb2025-present + internship)
+  yoe: 4
   acceptable_yoe_range: [1, 5]
 
-  summary: >
-    Software Engineer specializing in enterprise AI Agents and automation,
-    translating ambiguous business problems into production-grade agentic systems
-    that eliminate manual work, reduce operational costs, and scale across entire
-    organizations. Backed by 4+ years of engineering depth, a Master's in Computer
-    Science with ML specialization, and a track record of 92% cost reduction,
-    7,500+ employee hours saved annually, and 9 shipped AI agents serving 6,000+
-    enterprise users. Rooted in a full-stack distributed systems foundation, having
-    engineered production platforms processing 100K+ daily transactions and serving
-    200K+ consumers at a Fortune 500 banking client.
+  experience:
+    - company: Polaris Inc
+      title: Software Engineer, AI Systems
+      location: Medina, MN (Remote)
+      dates: Feb 2025 – Present
+      contract_notes: "Contract via Arcane Systems Inc. (Sep 2025–present) | Devoir Software Solutions LLC (Feb–Sep 2025)"
+      context: >
+        4-person embedded team. Sole developer, no BA, no dedicated QA. Owned complete lifecycle:
+        business requirements to architecture to data strategy to build to testing to stakeholder
+        iteration to AI board approval to production deployment. Functioned simultaneously as
+        engineer, BA and QA. Presented 8 formal AI governance reviews to senior AI Board
+        (Director/VP level), 100% approval rate. Collaborated directly with 7+ business teams.
+      agents:
+        - name: PitCrew
+          team: Product Development
+          corpus: "37,000 documents (ETQ Reliance, SharePoint, PTC vendor docs, Workday transcripts)"
+          metrics: "91.7% answer accuracy, 4.2/5.0 user satisfaction, 3,000+ users"
+          savings: "$49,400/year (99% cost reduction from $50,000 to $600/year), 7,500+ employee hours annually"
+        - name: SEBA
+          team: Sourcing
+          metrics: "3,000+ users, same cost structure as PitCrew"
+          savings: "$49,400/year, 7,500+ hours. Eliminated SME interruption overhead entirely."
+        - name: Legal Case Agent
+          team: Legal
+          description: "Instant retrieval over open/closed case history, claims, laws, outcomes. Replaced hours of paralegal research with sub-second semantic lookup."
+        - name: Earnings Agent
+          team: Finance
+          description: "Natural language interface for earnings data, financial metrics, period comparisons. Eliminated analyst dependency for financial queries."
+        - name: Analyst Agent
+          team: Strategy/Finance
+          description: "Text-to-SQL via MCP over Snowflake. Fine-tuned Azure AI Foundry model for competitive intelligence, detects risk signals and marketing change alerts."
+        - name: Patent Email Triage Agent
+          team: Legal/IP
+          description: "Semantically categorizes inbound legal emails, routes to correct category, detects urgency, fires real-time text alerts for time-sensitive matters. Replaced manual email triage entirely."
+        - name: AI Compliance Monitor
+          team: Legal/Compliance
+          description: "Autonomous agent crawling Federal Register, DOJ, EU AI Act, legal journals daily. Playwright headless scraping, SHA-256 hashing for change detection against Snowflake, LangGraph orchestration mapping impact against 63 internal POCs and projects, Microsoft Graph API for targeted email alerts. Eliminated 500+ hours of manual compliance monitoring annually. Self-initiated."
+        - name: New AI Laws Agent
+          team: Legal
+          description: "Tracks and validates new AI laws against internal AI application documents and projects. Sends alerts about which POCs/projects are affected."
+        - name: HR/Learning Agent
+          team: HR
+          description: "Automated Workday Learning content ingestion pipeline using RPA, Azure Blob Storage, semantic and hierarchical chunking, text-embedding-3-large, Azure AI Search. Enabled agents to answer questions over training content."
+      overall_metrics:
+        - "$98,800+ saved annually (PitCrew + SEBA combined)"
+        - "15,000+ employee hours saved annually"
+        - "91.7% average answer accuracy"
+        - "4.2/5.0 user satisfaction"
+        - "6,000+ enterprise users"
+        - "37,000+ document corpus"
+        - "63 internal POCs and projects monitored"
+        - "8 formal AI board presentations, 100% approval rate"
+        - "Zero security incidents"
+        - "500+ hours of compliance monitoring eliminated annually"
+      tech:
+        orchestration: "LangGraph stateful graph, Pydantic v2 schema validation, self-correction loops, conditional routing"
+        llms: "Azure OpenAI GPT-4, fine-tuned Azure AI Foundry model"
+        rag: "Azure AI Search hybrid retrieval (BM25 + dense vector + semantic re-ranking), hierarchical parent-child chunking, text-embedding-3-large (1536-dim), OData security trimming"
+        structured_data: "text-to-SQL via MCP over Snowflake, Cosmos DB agent memory"
+        frontend: "React/TypeScript with SSE streaming, real-time SignalR health dashboards"
+        backend: "FastAPI async, Python"
+        infra: "AKS with Horizontal Pod Autoscaling, Docker, Azure DevOps CI/CD"
+        security: "Azure AD (Entra ID) OAuth 2.0, JWT bearer tokens, RBAC, OData security trimming, row-level permissions, PII filtering, prompt injection prevention, kill-switch guardrails"
+        eval: "RAGAS pipelines against 500+ ground-truth Q&A tuples (Faithfulness, Answer Relevance, Context Recall), adversarial testing, red teaming"
+        observability: "SignalR dashboards, Azure Monitor, MLflow, Prometheus"
+        source_systems: "ETQ Reliance, SharePoint, ServiceNow, Workday, Degreed, Jaggaer (6 enterprise systems)"
+        compliance_stack: "Playwright, SHA-256 hashing, Snowflake, Microsoft Graph API"
+
+    - company: Avexa Corporation
+      title: Software Engineer
+      location: Hyderabad, India
+      dates: Sep 2020 – Dec 2022
+      context: "Placed at Hexaware Technologies, then Fortune 500 banking client (NDA). Modernized legacy digital payments platform."
+      bullets:
+        - "Built Angular/TypeScript SPA for Fortune 500 banking client's consumer payments portal with WebSocket real-time updates, RxJS reactive state management, and mobile-first design serving 200K+ consumers, eliminating full-page reloads."
+        - "Cut transaction failure detection from hours to minutes by building real-time monitoring dashboard over Java/Spring Boot microservices and Apache Kafka event streams with live visibility into 100K+ daily transactions and volume anomaly alerts."
+        - "Prevented $2M+ in annual fraud losses by integrating ML model outputs into fraud decisioning UI via REST APIs, surfacing risk-scored transactions with full customer context and one-click approve/flag/escalate workflow."
+        - "Eliminated manual release overhead by containerizing payment microservices on AWS EKS using Docker, Kubernetes, Jenkins, and GitHub Actions CI/CD across PostgreSQL and Redis-backed services."
+
+    - company: Avexa Corporation
+      title: Software Engineer Intern
+      location: Hyderabad, India
+      dates: Jan 2020 – Aug 2020
+      bullets:
+        - "Saved 15% on project costs by building real-time budget tracking app across 50+ construction sites using React, Django REST Framework, PostgreSQL, and Chart.js, replacing manual spreadsheet reconciliation."
+        - "Engineered offline-first mobile experience for zero-connectivity field workers using React, Redux Persist, and IndexedDB with automatic background sync and conflict resolution."
+
+  volunteer:
+    - org: Center for Societal Aspirations
+      title: Software Developer Specialist Intern
+      location: Dallas, TX (Remote)
+      dates: Sep 2024 – Dec 2024
+      bullets:
+        - "Mapped 500+ previously untracked community services across 10+ underserved regions by building a GIS-powered search platform using React, Node.js, PostGIS, Docker, deployed to Google Cloud Run."
 
   education:
     - degree: Master of Science, Computer Science (Machine Learning Specialization)
@@ -26,77 +111,53 @@ candidate:
       gpa: "4.0 / 4.0"
       dates: Jan 2023 – Dec 2024
       notes:
-        - Teaching Assistant for Artificial Intelligence course (150+ students)
+        - "Graduate Teaching Assistant, Artificial Intelligence course — mentored 180+ undergraduate students (Jan 2023 – May 2024)"
         - "Relevant Coursework: Design & Analysis of Algorithms, Advanced Computer Architecture, Advanced Software Systems Security"
-
-  experience:
-    - company: Polaris Inc
-      title: Software Engineer
-      location: Medina, MN (Remote)
-      dates: Feb 2025 – Present
-      contract_notes: "Contract via Arcane Systems Inc (Sep 2025–present) | Contract via Devoir Software Solutions LLC (Feb–Sep 2025)"
-      bullets:
-        - "Saved $98,800+ annually and 15,000+ employee hours by designing and deploying 9 production AI agents across Finance, Legal, Sourcing, HR, and Compliance using LangGraph stateful graph orchestration, Azure OpenAI, Azure AI Foundry, and FastAPI async backends"
-        - "Maintained 91.7% average answer accuracy and 4.2/5.0 user satisfaction across all 9 agents over a 100,000+ document corpus, engineering Azure AI Search hybrid retrieval (BM25 + dense vector + semantic re-ranking), hierarchical parent-child chunking with text-embedding-3-large, and Pydantic v2 validated tool schemas with exact source citations"
-        - "Eliminated 500+ hours of manual compliance monitoring annually by architecting the AI Compliance Monitor using Playwright for headless regulatory scraping, SHA-256 change detection against Snowflake, and Microsoft Graph API for targeted alert dispatch across 63 internal POCs"
-        - "Eliminated redundant data ingestion across all 9 agents by architecting a shared Azure AI Search index layer over 6 enterprise source systems, reducing per-agent setup from weeks to days with replica scaling and index partitioning sustaining low-latency retrieval under concurrent load across 6,000+ users"
-        - "Owned full-stack delivery across all 9 agents: React/TypeScript frontends with SSE streaming, FastAPI backends, AKS deployments with Horizontal Pod Autoscaling, real-time SignalR dashboards, RAGAS eval pipelines against 500+ ground-truth Q&A tuples, kill-switch guardrails, HITL escalation flows, and Azure DevOps CI/CD"
-        - "Achieved 100% approval rate across 8 formal AI governance reviews with Polaris's senior AI Board, defending architecture, business value, and risk strategy under executive scrutiny"
-        - "Hardened 9 production agents across 6,000+ enterprise users with Azure AD (Entra ID) RBAC, OData security trimming at the index layer, source-level data permissions per user group, and zero security incidents across all deployments"
-
-    - company: Avexa (Fortune 500 banking client)
-      title: Software Engineer
-      location: Hyderabad, India
-      dates: Sep 2020 – Dec 2022
-      bullets:
-        - "Served 200K+ consumers on a Fortune 500 banking client's payments portal by delivering a responsive Angular/TypeScript SPA with WebSocket real-time updates, RxJS reactive state management, and mobile-first design eliminating full-page reloads"
-        - "Cut transaction failure detection from hours to minutes by building a real-time monitoring dashboard over Java/Spring Boot microservices and Apache Kafka event streams, giving operations teams live visibility into 100K+ daily transactions with volume anomaly alerts"
-        - "Prevented $2M+ in annual fraud losses by integrating ML model outputs into a decisioning UI via REST APIs, surfacing risk-scored transactions with full customer context and one-click approve/flag/escalate workflow"
-        - "Containerized payment microservices on AWS EKS using Docker, Kubernetes, Jenkins, and GitHub Actions CI/CD across PostgreSQL and Redis-backed services, eliminating manual release overhead"
-
-    - company: Avexa
-      title: Software Engineer Intern
-      location: Hyderabad, India
-      dates: Jan 2020 – Aug 2020
-      bullets:
-        - "Saved 15% on project costs by building a real-time budget tracking app across 50+ construction sites using React, Django REST Framework, PostgreSQL, and Chart.js, replacing manual spreadsheet reconciliation"
-        - "Engineered offline-first mobile experience for zero-connectivity field workers using React, Redux Persist, and IndexedDB with automatic background sync and conflict resolution"
-
-  volunteer:
-    - org: Center for Societal Aspirations
-      title: Software Developer Specialist Intern
-      location: Dallas, TX (Remote)
-      dates: Sep 2024 – Dec 2024
-      bullets:
-        - "Mapped 500+ previously untracked community services across 10+ underserved regions by building a GIS-powered search platform with interactive service cards using React, Node.js, PostGIS, Docker, deployed to Google Cloud Run"
 
   projects:
     - name: AI Resume Builder
       stack: React, TypeScript, Node.js, Express, Claude API, Tailwind CSS
+      github: https://github.com/b-vaibhavi/Resume-Builder-App
       bullets:
-        - "Built full-stack AI application integrating Claude LLM API for automated resume generation with real-time chat interface, live document editing, and multi-format export (PDF/DOCX)"
+        - "Full-stack AI application with Claude LLM for automated resume generation, real-time chat interface, live document editing, and multi-format export (PDF/DOCX)."
+
+    - name: Event-Driven Notification System
+      stack: Angular, Spring Boot, Apache Kafka, GCP Cloud Run, MySQL
+      bullets:
+        - "Architected event-driven microservices with async message processing via Apache Kafka, deployed on GCP Cloud Run with Cloud SQL and Cloud Storage."
 
     - name: Fake News Detection
       stack: Python, PyTorch, CNN, RNN, BiGRU
+      github: https://github.com/b-vaibhavi/Fake-News-Detection-using-Multi-Domain-Visual-Information
       bullets:
-        - "Implemented Multi-View Neural Network combining DCT frequency analysis with multi-scale CNN, RNN, and bidirectional GRU for image manipulation detection, achieving 81% accuracy on Weibo dataset"
+        - "Multi-View Neural Network combining DCT frequency analysis with multi-scale CNN, RNN, and BiGRU for image manipulation detection. 81% accuracy on Weibo dataset."
+
+    - name: Interview Master
+      stack: FastAPI, GPT-4, React, Voice API
+      bullets:
+        - "AI interview prep platform with real-time voice feedback, live coaching, and performance analytics."
 
   certifications:
-    - "AWS Solutions Architect – Professional (2025)"
-    - "AWS Developer – Associate (2024)"
-    - "Microsoft Azure AI Engineer Associate (2025)"
+    - name: "AWS Solutions Architect – Professional (2025)"
+      url: https://www.credly.com/badges/615fe3c3-ea7f-47e5-8e54-8064db540e21/public_url
+    - name: "AWS Developer Associate (2024)"
+      url: https://www.credly.com/badges/e30aac93-117f-49cf-b183-69cccd4daefe/public_url
+    - name: "Microsoft Azure AI Engineer Associate (2025)"
+      url: https://learn.microsoft.com/api/credentials/share/en-gb/SrinijaVaibhaviBoggavarapu-7271/11BAF18E12DBD84E?sharingId=F8CDC6459DD7DB81
 
   skills:
     languages: [Python, TypeScript, JavaScript, Java, SQL, Bash]
     frontend: [React, Angular, "Next.js", "Lit Elements", SignalR, WebSockets, "HTML/CSS"]
-    backend: [FastAPI, Django, Flask, "Spring Boot", "Node.js", "REST APIs", GraphQL, Kafka, "Microservices Architecture"]
+    backend: [FastAPI, "Spring Boot", "Node.js", "REST APIs", GraphQL, Kafka, "Microservices Architecture", Django, Flask]
     databases: [PostgreSQL, "Cosmos DB", "Azure AI Search", pgvector, Pinecone, Weaviate, Redis, Snowflake]
-    ai_ml: [LangGraph, LangChain, "RAG pipelines", "Multi-Agent Orchestration", "Prompt Engineering", "Azure OpenAI", "OpenAI API", "Anthropic Claude API", "Copilot Studio", "Agentic Workflows", "HITL", "Semantic Search", "Embedding Pipelines", MCP, A2A, "Agent Memory Architecture", "Kill Switch & Guardrail Design"]
-    cloud: ["Azure (AKS, Monitor, AD, Blob, Service Bus, Functions, API Management, Key Vault)", "AWS (EC2, S3, EKS, Lambda, Bedrock, SageMaker, IAM, CloudWatch, RDS, API Gateway)", GCP, Docker, Kubernetes, "CI/CD", Terraform, Jenkins]
+    ai_ml: [LangGraph, LangChain, "RAG Pipelines", "Multi-Agent Orchestration", "Prompt Engineering", "Azure OpenAI", "OpenAI API", "Anthropic Claude API", "Copilot Studio", "Agentic Workflows", HITL, "Semantic Search", "Embedding Pipelines", MCP, A2A, "Agent Memory Architecture", "Kill Switch & Guardrail Design"]
+    cloud: ["Azure (AKS, Monitor, AD, Blob, Service Bus, Functions, API Management, Key Vault)", "AWS (EC2, S3, EKS, Lambda, Bedrock, SageMaker, IAM, CloudWatch, RDS, API Gateway)", GCP, Docker, Kubernetes, Terraform, Jenkins]
+    microsoft: ["Copilot Studio", "Power Automate", SharePoint, Dataverse, "Power Platform"]
     testing: [Pytest, Jest, "Unit Testing", "Integration Testing", "E2E Testing", "Adversarial Testing", "Red Teaming", "Load Testing"]
+    security: ["Prompt Injection Prevention", RBAC, "PII Filtering", "Input/Output Validation", OAuth, JWT, "Azure Key Vault", "Azure AD", "OData Security Trimming"]
     observability: [MLflow, Prometheus, "LLM Evals", RAGAS, Guardrails, "A/B Testing", "Production Monitoring"]
+    ai_tooling: ["Claude Code", "GitHub Copilot", Cursor]
 
-  # Domains to hard-exclude regardless of title or stack
   exclude_domains:
     - robotics
     - embedded systems
