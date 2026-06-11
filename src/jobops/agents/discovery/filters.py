@@ -147,6 +147,7 @@ _KNOWN_JOB_BOARD_ORGS = {
     "jobs on the go",
     "zip recruiter",
     "jack & jill",
+    "jack",
     "remotehunter",
     "jobs via dice",
     "big wave digital",
