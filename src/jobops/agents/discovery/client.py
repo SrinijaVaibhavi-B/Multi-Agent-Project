@@ -76,7 +76,7 @@ def fetch_jb_jobs(
     limit: int = 1000,
     offset: int = 0,
 ) -> list[dict]:
-    """Fetch jobs from the active-jb endpoint."""
+    """Fetch jobs from the active-jb endpoint (job boards: LinkedIn, Wellfound, YC)."""
     params: dict[str, Any] = {
         "time_frame": time_frame,
         "title": title_filter,
@@ -84,6 +84,6 @@ def fetch_jb_jobs(
         "limit": limit,
         "offset": offset,
         "description_format": "text",
-        "include_basic_organization_details": "true",
+        # include_basic_organization_details not supported on active-jb
     }
     return _fetch_paginated("active-jb", params)
