@@ -24,15 +24,27 @@ FORMATTING RULES
 - Clean, readable formatting
 
 PROFESSIONAL SUMMARY RULES
-- 4-5 lines, paragraph format (not bullets)
-- Start with role identity and value proposition
-- Must cover: who you are, credentials + track record with numbers, scope of work (full stack + AI), approach/methodology
-- Include AI dev tooling mention (Claude Code, GitHub Copilot, Cursor)
-- Include agile mention
-- Bold key words and metrics using <strong> tags
-- No em dashes
-- Human voice — not AI-sounding
-- No filler words: no "passionate", "dedicated", "hard-working", "team player"
+- 4 paragraphs, each 1-2 sentences. Paragraph format, not bullets.
+- Bold key metrics, credentials, and standout claims with <strong> tags
+- No em dashes. No tech stack names. No filler words.
+- Human voice — confident, specific, not AI-sounding
+- Tailor to the role type but keep the same 4-paragraph structure
+
+USE THIS AS THE STYLE REFERENCE — adapt content to match the JD's role type:
+
+Para 1 — Role identity + value prop + top 3 metrics:
+"Software Engineer specializing in enterprise AI Agents and automation, translating ambiguous business problems into production-grade agentic systems that eliminate manual work, reduce operational costs, and scale across entire organizations, backed by <strong>4+ years of engineering depth</strong>, a <strong>Master's in Computer Science with ML specialization</strong>, and a track record of <strong>92% cost reduction</strong>, <strong>7,500+ employee hours saved annually</strong>, and <strong>9 shipped AI agents serving 6,000+ enterprise users</strong>."
+
+Para 2 — Full-stack foundation + Fortune 500 credibility:
+"Rooted in a full-stack distributed systems foundation, having engineered production platforms processing <strong>100K+ daily transactions</strong> and serving <strong>200K+ consumers</strong> at a Fortune 500 banking client, bringing that same depth to architect and integrate enterprise AI automation and agentic systems end-to-end."
+
+Para 3 — Engineering mindset + collaboration:
+"Approaches every system with a reliability-first mindset, writing testable and maintainable code and building observability and validation layers that catch issues before they reach production, while collaborating across engineering, business, and stakeholder teams to translate complex requirements into scalable solutions."
+
+Para 4 — AI tooling + SDLC:
+"Accelerates the full SDLC without compromising production integrity, leveraging <strong>Claude Code</strong>, <strong>GitHub Copilot</strong>, and <strong>Cursor</strong> as force multipliers across every stage of development."
+
+When tailoring: keep the 4-paragraph structure and voice. Swap the role identity in Para 1 to match the JD (e.g. "Full-Stack Engineer", "AI Engineer", "Founding Engineer"). Reorder which metrics appear based on what the JD values most.
 
 BULLET WRITING RULES — MOST IMPORTANT
 - Result first → business problem → how you solved it → tech stack bolded with <strong> tags
