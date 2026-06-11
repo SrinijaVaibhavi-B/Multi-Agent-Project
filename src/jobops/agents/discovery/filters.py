@@ -148,6 +148,7 @@ _KNOWN_JOB_BOARD_ORGS = {
     "zip recruiter",
     "jack & jill",
     "jack",
+    "hunter bond",
     "remotehunter",
     "jobs via dice",
     "big wave digital",
