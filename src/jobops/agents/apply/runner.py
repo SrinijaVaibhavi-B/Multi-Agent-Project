@@ -2,7 +2,6 @@
 
 import logging
 import os
-import tempfile
 
 from playwright.sync_api import sync_playwright
 
@@ -28,6 +27,17 @@ _ATS_URL_PATTERNS = {
     "ashby": ["ashbyhq.com", "jobs.ashbyhq.com"],
 }
 
+# Stealth init script — masks navigator.webdriver and other bot signals
+_STEALTH_SCRIPT = """
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+    Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+    Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+    window.chrome = { runtime: {} };
+    Object.defineProperty(navigator, 'permissions', {
+        get: () => ({ query: () => Promise.resolve({ state: 'granted' }) })
+    });
+"""
+
 
 def _detect_ats(job_url: str) -> str | None:
     url = job_url.lower()
@@ -35,6 +45,40 @@ def _detect_ats(job_url: str) -> str | None:
         if any(p in url for p in patterns):
             return ats
     return None
+
+
+def _make_context(pw):
+    """Create a stealth Playwright browser context."""
+    browser = pw.chromium.launch(
+        headless=True,
+        args=[
+            "--ignore-certificate-errors",
+            "--disable-blink-features=AutomationControlled",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+        ],
+    )
+    context = browser.new_context(
+        user_agent=(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        ),
+        ignore_https_errors=True,
+        viewport={"width": 1280, "height": 900},
+        locale="en-US",
+        timezone_id="America/New_York",
+    )
+    context.add_init_script(_STEALTH_SCRIPT)
+
+    # Use playwright-stealth if available
+    try:
+        from playwright_stealth import stealth_sync
+        _stealth_fn = stealth_sync
+    except ImportError:
+        _stealth_fn = None
+
+    return browser, context, _stealth_fn
 
 
 def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
@@ -59,18 +103,7 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
     logger.info("Processing %d jobs (dry_run=%s)", len(jobs), dry_run)
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(
-            headless=True,
-            args=["--ignore-certificate-errors", "--disable-web-security"],
-        )
-        context = browser.new_context(
-            user_agent=(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/120.0.0.0 Safari/537.36"
-            ),
-            ignore_https_errors=True,
-        )
+        browser, context, stealth_fn = _make_context(pw)
 
         for job in jobs:
             job_url = job.job_url
@@ -81,13 +114,9 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
                 _update_status(job.id, "review_needed", f"Unsupported ATS: {job_url}")
                 continue
 
-            # Download resume to temp file
-            resume_path = None
-            tmp_file = None
             try:
                 if job.resume_drive_url:
-                    tmp_file = download_resume(job.resume_drive_url)
-                    resume_path = tmp_file
+                    resume_path = download_resume(job.resume_drive_url)
                 else:
                     logger.warning("No resume_drive_url for job %s — skipping", job.id)
                     _update_status(job.id, "review_needed", "No resume uploaded")
@@ -98,6 +127,8 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
                     continue
 
                 page = context.new_page()
+                if stealth_fn:
+                    stealth_fn(page)
                 try:
                     handler = _ATS_HANDLERS[ats]
                     jd_snippet = (job.raw_description or "")[:800]
@@ -110,15 +141,12 @@ def run_apply(batch_size: int = 10, dry_run: bool = False) -> None:
             except Exception as e:
                 logger.error("Job %s failed: %s", job.id, e)
                 _update_status(job.id, "failed", str(e))
-            finally:
-                if tmp_file and os.path.exists(tmp_file):
-                    os.unlink(tmp_file)
 
         context.close()
         browser.close()
 
 
-def _update_status(job_id: str, status: str, reason: str) -> None:
+def _update_status(job_id: int, status: str, reason: str) -> None:
     with get_session() as session:
         job = session.query(JobPipeline).filter(JobPipeline.id == job_id).first()
         if job:

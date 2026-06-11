@@ -47,7 +47,8 @@ def download_resume(drive_url: str) -> str:
     service = _get_drive_service()
 
     request = service.files().get_media(fileId=file_id)
-    tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
-    tmp.write(request.execute())
-    tmp.close()
-    return tmp.name
+    tmp_dir = tempfile.gettempdir()
+    tmp_path = os.path.join(tmp_dir, "srinijavaibhavi.pdf")
+    with open(tmp_path, "wb") as f:
+        f.write(request.execute())
+    return tmp_path
