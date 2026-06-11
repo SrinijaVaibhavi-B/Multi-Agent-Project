@@ -19,6 +19,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest"]
 
+[project.scripts]
+jobops-apply = "jobops.cli.apply_cli:apply"
+jobops-tailor = "jobops.cli.tailor_cli:tailor"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
