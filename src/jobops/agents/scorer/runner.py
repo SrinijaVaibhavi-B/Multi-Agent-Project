@@ -1,5 +1,7 @@
-"""Scorer agent orchestration — score unscored jobs in the pipeline."""
+"""Scorer orchestration — sequential, parallel, and batch modes."""
 
+import asyncio
+import os
 import time
 
 from dotenv import load_dotenv
@@ -8,133 +10,183 @@ load_dotenv()
 from sqlalchemy import select
 
 from jobops.agents.scorer.rules import apply_rules
-from jobops.agents.scorer.scorer import score_job
+from jobops.agents.scorer.scorer import score_job, score_jobs_parallel, submit_batch, poll_batch
 from jobops.db.db import get_session
 from jobops.db.models import JobPipeline
 
 _COMMIT_BATCH_SIZE = 50
-_PROGRESS_INTERVAL = 25
-_RATE_LIMIT_SLEEP = 0.1  # seconds between LLM calls
 
 
 def _pipeline_to_job_dict(pipeline: JobPipeline) -> dict:
-    """Convert a JobPipeline ORM object to a plain dict for rules/scorer."""
     return {
         "job_title": pipeline.job_title,
         "company_name": pipeline.company_name,
         "job_url": pipeline.job_url,
         "raw_description": pipeline.raw_description,
-        # ai_experience_level is not stored on JobPipeline; default to None (unknown — keep it)
         "ai_experience_level": None,
     }
 
 
-def run_scorer(
-    batch_size: int = 100,
-    skip_scored: bool = True,
-    dry_run: bool = False,
-) -> dict:
-    """
-    Score unscored jobs in the pipeline.
-
-    1. Load up to `batch_size` unscored jobs (fit_score IS NULL, status='discovered').
-    2. For each job:
-       a. Run apply_rules() — if fails, set fit_score=0, pipeline_status='skipped'.
-       b. If passes, run score_job() — set fit_score to result.
-    3. If fit_score < 40: set pipeline_status='skipped'.
-    4. If fit_score >= 40: set pipeline_status='queued'.
-    5. Commit in batches of 50.
-    6. Print progress every 25 jobs.
-
-    Returns a summary dict with counts.
-    """
+def _load_unscored(batch_size: int) -> list[JobPipeline]:
     with get_session() as session:
-        query = (
+        jobs = list(session.scalars(
             select(JobPipeline)
             .where(JobPipeline.pipeline_status == "discovered")
-        )
-        if skip_scored:
-            query = query.where(JobPipeline.fit_score.is_(None))
-
-        query = query.limit(batch_size)
-        jobs = list(session.scalars(query).all())
-
-    total = len(jobs)
-    print(f"[scorer] Found {total} unscored jobs to process.")
-
-    counts = {
-        "total": total,
-        "rule_rejected": 0,
-        "llm_scored": 0,
-        "queued": 0,
-        "skipped": 0,
-        "dry_run": dry_run,
-    }
-
-    pending_updates: list[dict] = []  # {id, fit_score, pipeline_status}
-
-    for idx, pipeline in enumerate(jobs, start=1):
-        job_dict = _pipeline_to_job_dict(pipeline)
-
-        passed_rules, rule_reason = apply_rules(job_dict)
-
-        if not passed_rules:
-            fit_score = 0
-            new_status = "skipped"
-            counts["rule_rejected"] += 1
-            print(f"[scorer] [{idx}/{total}] RULE REJECT — {pipeline.job_title} @ {pipeline.company_name} — {rule_reason}")
-        else:
-            fit_score = score_job(job_dict)
-            counts["llm_scored"] += 1
-            time.sleep(_RATE_LIMIT_SLEEP)
-
-            if fit_score >= 40:
-                new_status = "queued"
-                counts["queued"] += 1
-            else:
-                new_status = "skipped"
-                counts["skipped"] += 1
-
-            print(
-                f"[scorer] [{idx}/{total}] score={fit_score} status={new_status} — "
-                f"{pipeline.job_title} @ {pipeline.company_name}"
-            )
-
-        pending_updates.append({
-            "id": pipeline.id,
-            "fit_score": fit_score,
-            "pipeline_status": new_status,
-        })
-
-        if idx % _PROGRESS_INTERVAL == 0:
-            print(f"[scorer] Progress: {idx}/{total} processed.")
-
-        # Commit in batches
-        if len(pending_updates) >= _COMMIT_BATCH_SIZE:
-            if not dry_run:
-                _flush_updates(pending_updates)
-            pending_updates.clear()
-
-    # Flush remaining
-    if pending_updates and not dry_run:
-        _flush_updates(pending_updates)
-    elif pending_updates and dry_run:
-        print(f"[scorer] DRY RUN — would update {len(pending_updates)} remaining jobs.")
-
-    if dry_run:
-        print(f"[scorer] DRY RUN complete — no DB writes performed.")
-    else:
-        print(f"[scorer] Done. queued={counts['queued']}, skipped={counts['skipped']}, rule_rejected={counts['rule_rejected']}")
-
-    return counts
+            .where(JobPipeline.fit_score.is_(None))
+            .limit(batch_size)
+        ).all())
+    return jobs
 
 
 def _flush_updates(updates: list[dict]) -> None:
-    """Write a batch of fit_score/pipeline_status updates to the DB."""
     with get_session() as session:
-        for update in updates:
-            pipeline = session.get(JobPipeline, update["id"])
-            if pipeline is not None:
-                pipeline.fit_score = update["fit_score"]
-                pipeline.pipeline_status = update["pipeline_status"]
+        for u in updates:
+            p = session.get(JobPipeline, u["id"])
+            if p:
+                p.fit_score = u["fit_score"]
+                p.pipeline_status = u["pipeline_status"]
         session.commit()
+
+
+def _apply_rules_pass(jobs: list[JobPipeline]) -> tuple[list[JobPipeline], list[dict]]:
+    """Run rule filter. Returns (passed_jobs, rule_rejected_updates)."""
+    passed, rejected_updates = [], []
+    for p in jobs:
+        ok, reason = apply_rules(_pipeline_to_job_dict(p))
+        if not ok:
+            print(f"[scorer] RULE REJECT — {p.job_title} @ {p.company_name} — {reason}")
+            rejected_updates.append({"id": p.id, "fit_score": 0, "pipeline_status": "skipped"})
+        else:
+            passed.append(p)
+    return passed, rejected_updates
+
+
+def _build_summary(total, rule_rejected, llm_scored, queued, skipped) -> dict:
+    return {"total": total, "rule_rejected": rule_rejected,
+            "llm_scored": llm_scored, "queued": queued, "skipped": skipped}
+
+
+def _status_from_score(score: int) -> str:
+    return "queued" if score >= 40 else "skipped"
+
+
+# ---------------------------------------------------------------------------
+# Mode 1 — Sequential (original, slow)
+# ---------------------------------------------------------------------------
+
+def run_scorer(batch_size: int = 100, skip_scored: bool = True, dry_run: bool = False) -> dict:
+    jobs = _load_unscored(batch_size)
+    total = len(jobs)
+    print(f"[scorer] Found {total} unscored jobs — sequential mode.")
+
+    passed, rejected_updates = _apply_rules_pass(jobs)
+    if not dry_run:
+        _flush_updates(rejected_updates)
+
+    counts = {"total": total, "rule_rejected": len(rejected_updates), "llm_scored": 0, "queued": 0, "skipped": 0}
+    updates = []
+
+    for idx, p in enumerate(passed, 1):
+        score = score_job(_pipeline_to_job_dict(p))
+        status = _status_from_score(score)
+        counts["llm_scored"] += 1
+        if status == "queued": counts["queued"] += 1
+        else: counts["skipped"] += 1
+        print(f"[scorer] [{idx}/{len(passed)}] score={score} status={status} — {p.job_title} @ {p.company_name}")
+        updates.append({"id": p.id, "fit_score": score, "pipeline_status": status})
+        if len(updates) >= _COMMIT_BATCH_SIZE:
+            if not dry_run:
+                _flush_updates(updates)
+            updates.clear()
+        time.sleep(0.1)
+
+    if updates and not dry_run:
+        _flush_updates(updates)
+
+    print(f"[scorer] Done. queued={counts['queued']}, skipped={counts['skipped']}, rule_rejected={counts['rule_rejected']}")
+    return counts
+
+
+# ---------------------------------------------------------------------------
+# Mode 2 — Parallel async (~10-20x faster)
+# ---------------------------------------------------------------------------
+
+def run_scorer_parallel(batch_size: int = 5000, concurrency: int = 20, dry_run: bool = False) -> dict:
+    jobs = _load_unscored(batch_size)
+    total = len(jobs)
+    print(f"[scorer] Found {total} unscored jobs — parallel mode (concurrency={concurrency}).")
+
+    passed, rejected_updates = _apply_rules_pass(jobs)
+    if not dry_run:
+        _flush_updates(rejected_updates)
+
+    print(f"[scorer] Rule filter: {len(rejected_updates)} rejected, {len(passed)} passing to LLM...")
+
+    job_dicts = [_pipeline_to_job_dict(p) for p in passed]
+    scores = asyncio.run(score_jobs_parallel(job_dicts, concurrency=concurrency))
+
+    updates = []
+    queued = skipped = 0
+    for p, score in zip(passed, scores):
+        status = _status_from_score(score)
+        if status == "queued": queued += 1
+        else: skipped += 1
+        updates.append({"id": p.id, "fit_score": score, "pipeline_status": status})
+
+    if not dry_run:
+        # Flush in batches
+        for i in range(0, len(updates), _COMMIT_BATCH_SIZE):
+            _flush_updates(updates[i:i + _COMMIT_BATCH_SIZE])
+
+    print(f"[scorer] Done. queued={queued}, skipped={skipped}, rule_rejected={len(rejected_updates)}")
+    return _build_summary(total, len(rejected_updates), len(passed), queued, skipped)
+
+
+# ---------------------------------------------------------------------------
+# Mode 3 — Anthropic Batch API (fire-and-forget, 50% cheaper)
+# ---------------------------------------------------------------------------
+
+def run_scorer_batch_submit(batch_size: int = 5000) -> str:
+    """Submit all unscored jobs as a batch. Returns batch_id."""
+    jobs = _load_unscored(batch_size)
+    total = len(jobs)
+    print(f"[scorer] Found {total} unscored jobs — batch submit mode.")
+
+    passed, rejected_updates = _apply_rules_pass(jobs)
+    _flush_updates(rejected_updates)
+    print(f"[scorer] Rule filter: {len(rejected_updates)} rejected, {len(passed)} sending to batch API...")
+
+    job_dicts = [_pipeline_to_job_dict(p) for p in passed]
+    pipeline_ids = [p.id for p in passed]
+
+    batch_id = submit_batch(job_dicts, pipeline_ids)
+    print(f"[scorer] Batch submitted! batch_id={batch_id}")
+    print(f"[scorer] Run 'score batch-results --batch-id {batch_id}' to collect results when ready (~5 min).")
+    return batch_id
+
+
+def run_scorer_batch_collect(batch_id: str, dry_run: bool = False) -> dict:
+    """Poll a batch and write results to DB once complete."""
+    print(f"[scorer] Checking batch {batch_id}...")
+    is_done, results = poll_batch(batch_id)
+
+    if not is_done:
+        print("[scorer] Batch not ready yet — check back in a few minutes.")
+        return {"status": "pending"}
+
+    print(f"[scorer] Batch complete! {len(results)} results received.")
+
+    updates = []
+    queued = skipped = 0
+    for pipeline_id, score in results.items():
+        status = _status_from_score(score)
+        if status == "queued": queued += 1
+        else: skipped += 1
+        updates.append({"id": pipeline_id, "fit_score": score, "pipeline_status": status})
+
+    if not dry_run:
+        for i in range(0, len(updates), _COMMIT_BATCH_SIZE):
+            _flush_updates(updates[i:i + _COMMIT_BATCH_SIZE])
+
+    print(f"[scorer] Done. queued={queued}, skipped={skipped}")
+    return {"status": "done", "queued": queued, "skipped": skipped, "total": len(results)}
