@@ -150,6 +150,14 @@ _KNOWN_JOB_BOARD_ORGS = {
     "remotehunter",
     "jobs via dice",
     "big wave digital",
+    "jobgether",
+    "jobright.ai",
+    "jobright",
+    "loop recruit",
+    "omw consulting",
+    "pavago",
+    "differential.",
+    "ness digital engineering",
 }
 
 # Companies explicitly blocklisted (spam posters, too large/competitive, defense, etc.)
