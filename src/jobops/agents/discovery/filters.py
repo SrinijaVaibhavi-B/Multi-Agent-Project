@@ -155,47 +155,47 @@ _BLOCKLISTED_ORGS = {
     "alphabet",
 }
 
-# Known defense / government contractors — require clearance, not relevant
+# Pure defense-only companies — no normal SWE roles worth applying to
 _DEFENSE_ORGS = {
     "lockheed martin",
     "lockheedmartin",
     "booz allen",
     "booz allen hamilton",
-    "raytheon",
     "northrop grumman",
     "northrop",
-    "general dynamics",
     "l3harris",
     "l3 technologies",
     "saic",
     "leidos",
     "amentum",
-    "heico",
-    "wencor",
-    "loft federal",
-    "govEagle",
-    "icon plc",
-    "bae systems",
-    "mitre",
     "peraton",
     "caci",
-    "mdo",
-    "abile group",
     "rtx",
     "raytheon",
     "collins aerospace",
     "pratt & whitney",
+    "general dynamics",
+    "bae systems",
+    "mitre corporation",
 }
 
-# Job title keywords that indicate clearance-required roles
+# Job title/description keywords that indicate citizenship or clearance requirements
+# Applied to ALL companies — catches Boeing, GM etc. roles that require clearance
 _CLEARANCE_KEYWORDS = [
     "top secret",
     "ts/sci",
     "secret clearance",
     "security clearance",
     "clearance required",
-    "dod",
+    "clearance eligible",
+    "dod clearance",
     "itar",
+    "us citizenship required",
+    "u.s. citizenship required",
+    "must be a us citizen",
+    "must be a u.s. citizen",
+    "active clearance",
+    "public trust clearance",
 ]
 
 
@@ -282,7 +282,9 @@ def compute_ghost_score(job: dict) -> int:
 
 def is_defense_role(organization: str, title: str) -> bool:
     """Return True if job is defense/government contractor or requires clearance."""
-    if organization.lower() in _DEFENSE_ORGS:
+    org_lower = organization.lower()
+    # Exact match or substring match for defense orgs
+    if any(d in org_lower for d in _DEFENSE_ORGS):
         return True
     title_lower = title.lower()
     return any(kw in title_lower for kw in _CLEARANCE_KEYWORDS)
