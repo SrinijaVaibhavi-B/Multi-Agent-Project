@@ -4,94 +4,141 @@
 <meta charset="UTF-8">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
     font-family: "Arial", "Helvetica Neue", sans-serif;
-    font-size: 9.5pt;
-    color: #1a1a1a;
+    font-size: 9pt;
+    color: #1a1a2e;
     background: white;
-    padding: 0.45in 0.5in;
+    padding: 0.1in;
     line-height: 1.3;
   }
 
   /* ── Header ── */
-  .header { text-align: center; margin-bottom: 8px; }
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    color: white;
+    padding: 10px 14px 8px 14px;
+    margin-bottom: 7px;
+    border-radius: 3px;
+  }
   .name {
-    font-size: 17pt;
+    font-size: 18pt;
     font-weight: 700;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: #1a1a1a;
+    color: #ffffff;
+  }
+  .tagline {
+    font-size: 8.5pt;
+    color: #e0d7f5;
+    margin-top: 1px;
+    margin-bottom: 5px;
+    font-style: italic;
   }
   .contact {
-    font-size: 8.5pt;
-    color: #444;
+    font-size: 8pt;
+    color: #c8c0e8;
     margin-top: 3px;
   }
-  .contact a { color: #444; text-decoration: none; }
-  .contact span { margin: 0 5px; color: #999; }
+  .contact a { color: #a8d8ea; text-decoration: none; }
+  .contact .pipe { margin: 0 5px; color: #6655a0; }
 
   /* ── Section titles ── */
   .section-title {
-    font-size: 9pt;
+    font-size: 8.5pt;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: #1a1a1a;
-    border-bottom: 1.5px solid #1a1a1a;
-    margin-top: 9px;
-    margin-bottom: 4px;
+    letter-spacing: 1.4px;
+    color: #0f3460;
+    border-bottom: 2px solid #e94560;
+    margin-top: 7px;
+    margin-bottom: 3px;
     padding-bottom: 1px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .section-title::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #e94560;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
 
   /* ── Summary ── */
-  .summary { font-size: 9pt; line-height: 1.4; color: #222; }
+  .summary {
+    font-size: 8.5pt;
+    line-height: 1.45;
+    color: #2d2d44;
+    background: #f8f7ff;
+    border-left: 3px solid #e94560;
+    padding: 4px 7px;
+    border-radius: 0 2px 2px 0;
+  }
 
   /* ── Experience ── */
-  .job { margin-bottom: 6px; }
+  .job { margin-bottom: 5px; }
   .job-top {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
   }
-  .job-company { font-weight: 700; font-size: 9.5pt; }
-  .job-location { font-size: 8.5pt; color: #555; }
+  .job-company {
+    font-weight: 700;
+    font-size: 9.5pt;
+    color: #0f3460;
+  }
+  .job-location { font-size: 8pt; color: #666; }
   .job-mid {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     margin-bottom: 2px;
   }
-  .job-title { font-style: italic; font-size: 9pt; color: #333; }
-  .job-dates { font-size: 8.5pt; color: #555; }
-  .job-contract { font-size: 8pt; color: #777; font-style: italic; margin-bottom: 2px; }
-
-  ul { padding-left: 12px; margin-bottom: 0; }
-  li {
-    margin-bottom: 2px;
-    font-size: 9pt;
-    line-height: 1.35;
+  .job-title { font-style: italic; font-size: 8.5pt; color: #444; }
+  .job-dates {
+    font-size: 8pt;
+    color: white;
+    background: #0f3460;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap;
   }
-  li strong { font-weight: 700; color: #1a1a1a; }
+  .job-contract { font-size: 7.5pt; color: #888; font-style: italic; margin-bottom: 2px; }
+
+  ul { padding-left: 11px; }
+  li {
+    margin-bottom: 1.5px;
+    font-size: 8.5pt;
+    line-height: 1.35;
+    color: #2d2d44;
+  }
+  li strong {
+    font-weight: 700;
+    color: #0f3460;
+  }
 
   /* ── Skills ── */
-  .skills-grid { display: table; width: 100%; }
-  .skills-row { display: table-row; }
+  .skills-grid { width: 100%; border-collapse: collapse; }
   .skill-label {
-    display: table-cell;
     font-weight: 700;
-    font-size: 8.5pt;
+    font-size: 8pt;
     white-space: nowrap;
-    padding-right: 6px;
-    padding-bottom: 2px;
-    width: 110px;
+    padding: 1px 6px 1px 0;
+    width: 100px;
     vertical-align: top;
-    color: #1a1a1a;
+    color: #e94560;
   }
   .skill-value {
-    display: table-cell;
-    font-size: 8.5pt;
-    color: #222;
-    padding-bottom: 2px;
+    font-size: 8pt;
+    color: #2d2d44;
+    padding: 1px 0;
+    border-bottom: 1px dotted #e8e8f0;
   }
 
   /* ── Education ── */
@@ -100,27 +147,44 @@
     justify-content: space-between;
     align-items: baseline;
   }
-  .edu-school { font-weight: 700; font-size: 9.5pt; }
-  .edu-location { font-size: 8.5pt; color: #555; }
+  .edu-school { font-weight: 700; font-size: 9.5pt; color: #0f3460; }
+  .edu-location { font-size: 8pt; color: #666; }
   .edu-mid {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
-  .edu-degree { font-style: italic; font-size: 9pt; color: #333; }
-  .edu-dates { font-size: 8.5pt; color: #555; }
+  .edu-degree { font-style: italic; font-size: 8.5pt; color: #444; }
+  .edu-dates {
+    font-size: 8pt;
+    color: white;
+    background: #0f3460;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
 
   /* ── Projects ── */
-  .project-header { margin-bottom: 1px; }
-  .project-name { font-weight: 700; font-size: 9pt; }
-  .project-stack { font-size: 8.5pt; color: #555; font-style: italic; }
+  .project-name { font-weight: 700; font-size: 9pt; color: #0f3460; }
+  .project-stack { font-size: 8pt; color: #e94560; font-style: italic; }
 
   /* ── Certifications ── */
-  .certs { font-size: 8.5pt; color: #222; line-height: 1.5; }
-
-  /* ── Divider ── */
-  .pipe { margin: 0 4px; color: #bbb; }
+  .cert-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 2px;
+  }
+  .cert-badge {
+    font-size: 7.5pt;
+    background: #f0f4ff;
+    border: 1px solid #0f3460;
+    color: #0f3460;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
@@ -128,11 +192,12 @@
 <!-- HEADER -->
 <div class="header">
   <div class="name">{{ name }}</div>
+  <div class="tagline">Software Engineer &nbsp;·&nbsp; AI &amp; Agentic Systems &nbsp;·&nbsp; Full-Stack &nbsp;·&nbsp; Cloud</div>
   <div class="contact">
     <a href="mailto:{{ email }}">{{ email }}</a>
-    <span>|</span>{{ phone }}
-    <span>|</span><a href="{{ github }}">{{ github | replace("https://github.com/", "github.com/") }}</a>
-    <span>|</span><a href="{{ linkedin }}">{{ linkedin | replace("https://www.linkedin.com/in/", "linkedin.com/in/") }}</a>
+    <span class="pipe">|</span>{{ phone }}
+    <span class="pipe">|</span><a href="{{ github }}">{{ github | replace("https://github.com/", "github.com/") }}</a>
+    <span class="pipe">|</span><a href="{{ linkedin }}">{{ linkedin | replace("https://www.linkedin.com/in/", "linkedin.com/in/") }}</a>
   </div>
 </div>
 
@@ -144,14 +209,14 @@
 
 <!-- SKILLS -->
 <div class="section-title">Skills</div>
-<div class="skills-grid">
+<table class="skills-grid">
 {% for label, items in skills.items() %}
-<div class="skills-row">
-  <div class="skill-label">{{ label }}:</div>
-  <div class="skill-value">{{ items | join(", ") }}</div>
-</div>
+<tr>
+  <td class="skill-label">{{ label }}</td>
+  <td class="skill-value">{{ items | join(", ") }}</td>
+</tr>
 {% endfor %}
-</div>
+</table>
 
 <!-- EXPERIENCE -->
 <div class="section-title">Experience</div>
@@ -178,7 +243,7 @@
 
 <!-- VOLUNTEER -->
 {% if volunteer %}
-<div class="section-title">Volunteer Experience</div>
+<div class="section-title">Volunteer</div>
 {% for v in volunteer %}
 <div class="job">
   <div class="job-top">
@@ -210,7 +275,7 @@
   <span class="edu-dates">{{ edu.dates }}</span>
 </div>
 {% if edu.notes %}
-<ul>
+<ul style="margin-top:2px;">
 {% for note in edu.notes %}
   <li>{{ note }}</li>
 {% endfor %}
@@ -222,22 +287,26 @@
 {% if projects %}
 <div class="section-title">Projects</div>
 {% for proj in projects %}
-<div class="project-header">
+<div style="margin-bottom:4px;">
   <span class="project-name">{{ proj.name }}</span>
   {% if proj.stack %}<span class="project-stack"> &nbsp;|&nbsp; {{ proj.stack }}</span>{% endif %}
+  <ul style="margin-top:1px;">
+  {% for bullet in proj.bullets %}
+    <li>{{ bullet }}</li>
+  {% endfor %}
+  </ul>
 </div>
-<ul>
-{% for bullet in proj.bullets %}
-  <li>{{ bullet }}</li>
-{% endfor %}
-</ul>
 {% endfor %}
 {% endif %}
 
 <!-- CERTIFICATIONS -->
 {% if certifications %}
 <div class="section-title">Certifications</div>
-<div class="certs">{{ certifications | join(" &nbsp;|&nbsp; ") }}</div>
+<div class="cert-list">
+{% for cert in certifications %}
+  <span class="cert-badge">{{ cert }}</span>
+{% endfor %}
+</div>
 {% endif %}
 
 </body>
