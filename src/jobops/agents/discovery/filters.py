@@ -146,6 +146,10 @@ _KNOWN_JOB_BOARD_ORGS = {
     "jobsora",
     "jobs on the go",
     "zip recruiter",
+    "jack & jill",
+    "remotehunter",
+    "jobs via dice",
+    "big wave digital",
 }
 
 # Companies explicitly blocklisted (spam posters, too large/competitive, defense, etc.)
