@@ -30,6 +30,7 @@ class Job(Base):
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="discovered")
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     raw_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    resume_used: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     review_items: Mapped[list["ReviewQueue"]] = relationship(back_populates="job")
 
