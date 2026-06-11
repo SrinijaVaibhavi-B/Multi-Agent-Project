@@ -1,0 +1,9 @@
+.env
+*.db
+*.sqlite
+resumes/
+screenshots/
+__pycache__
+.pytest_cache
+dist/
+*.egg-info

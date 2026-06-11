@@ -1,0 +1,11 @@
+llm:
+  scoring: gemini-flash-lite
+  resume_tailor: claude-sonnet-4-6
+  browser_driver: claude-haiku-4-5-20251001
+
+rate_caps:
+  applications_per_day: 30
+  outreach_per_day: 10
+
+ats:
+  companies: []  # list of {name, greenhouse_board_token} etc
