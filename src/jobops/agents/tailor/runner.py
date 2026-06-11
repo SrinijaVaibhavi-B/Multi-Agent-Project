@@ -87,7 +87,7 @@ def run_tailor(batch_size: int = 10, dry_run: bool = False, min_score: int = 60)
             tmp_path = tmp.name
 
         try:
-            render_pdf(tailored, tmp_path)
+            render_pdf(tailored, tmp_path, jd_raw=p.raw_description or "")
             print(f"[tailor]   PDF rendered → {tmp_path}")
 
             # 4. Upload to Drive

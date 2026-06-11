@@ -17,7 +17,7 @@ def _load_static_facts() -> dict:
         return yaml.safe_load(f)["candidate"]
 
 
-def render_pdf(tailored: dict, output_path: str) -> str:
+def render_pdf(tailored: dict, output_path: str, jd_raw: str = "") -> str:
     """
     Render a tailored resume dict to PDF.
     Returns the output_path on success.
@@ -61,6 +61,7 @@ def render_pdf(tailored: dict, output_path: str) -> str:
         "education": facts["education"],
         "projects": tailored.get("projects", facts.get("projects", [])) if tailored.get("include_projects", True) else [],
         "certifications": facts.get("certifications", []),
+        "jd_raw": jd_raw,
     }
 
     html_content = template.render(**context)
